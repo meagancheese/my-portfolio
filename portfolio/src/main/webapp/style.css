@@ -4,10 +4,20 @@
   width: 650px;
 }
 
-#greeting-container {
+#random-fact-container {
   margin-top: 20px;
 }
 
 body {
     background-color: lavender;
+}
+
+h1 {
+    text-align: center;
+}
+
+img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
