@@ -23,11 +23,10 @@ img {
 }
 
 #pets {
-  width: 1000px;
-  border: 10px darkorchid;
-  padding: 20px;
+  width: 1200px;
+  border: 10px darkorchid solid;
+  padding: 10px;
   margin: 10px;
-  text-align: center;
 }
 
 .column {
