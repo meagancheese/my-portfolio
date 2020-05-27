@@ -21,3 +21,23 @@ img {
     margin-left: auto;
     margin-right: auto;
 }
+
+#pets {
+  width: 1000px;
+  border: 10px darkorchid;
+  padding: 20px;
+  margin: 10px;
+  text-align: center;
+}
+
+.column {
+  float: left;
+  width: 16.66%;
+  padding: 5px;
+}
+
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
