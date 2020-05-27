@@ -17,8 +17,10 @@
  */
 function addRandomFact() {
   const facts =
-      ['I have a scar on the back of my head from when I fell backwards out of a chair when I was in 5th grade.', 'I backpacked through Portugal with a Catalan Troop.', 
-      'I have 6 pets, 5 cats and 1 dog.', 'I forgot I was in the orchestra pit for "South Pacific."'];
+      ['I have a scar on the back of my head from when I fell backwards out of a chair when I was in 5th grade.',
+       'I backpacked through Portugal with a Catalan Troop.', 
+       'I have 6 pets, 5 cats and 1 dog.', 
+       'I forgot I was in the orchestra pit for "South Pacific."'];
 
   // Pick a random fact.
   const fact = facts[Math.floor(Math.random() * facts.length)];
