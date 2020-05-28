@@ -18,11 +18,11 @@
 function addRandomFact() {
   const facts =
     ['I have a scar on the back of my head from when I fell backwards out of a chair when I was in 5th grade.',
-      'I backpacked through Portugal with a Catalan Troop.',
-      'I have 6 pets, 5 cats and 1 dog.',
-      'I forgot I was in the orchestra pit for "South Pacific."',
-      'I still have a baby tooth.',
-      "I've baked chocololate chip cookies for my entire highschool more than once."];
+     'I backpacked through Portugal with a Catalan Troop.',
+     'I have 6 pets, 5 cats and 1 dog.',
+     'I forgot I was in the orchestra pit for "South Pacific."',
+     'I still have a baby tooth.',
+     'I have baked chocololate chip cookies for my entire highschool more than once.'];
 
   // Pick a random fact.
   const fact = facts[Math.floor(Math.random() * facts.length)];
@@ -35,10 +35,10 @@ function addRandomFact() {
 function addRandomFavorite() {
   const favorites =
     ['My favorite color is purple.',
-      'My favorite icecream flavor is cookie dough.',
-      'My favorite musical is "Next to Normal."',
-      'My favorite school subject was math.',
-      'My favorite song is currently "Nice to Meet Ya" by Niall Horan.'];
+     'My favorite icecream flavor is cookie dough.',
+     'My favorite musical is "Next to Normal."',
+     'My favorite school subject was math.',
+     'My favorite song is currently "Nice to Meet Ya" by Niall Horan.'];
   //Pick a random favorite
   const favorite = favorites[Math.floor(Math.random() * favorites.length)];
 
