@@ -16,34 +16,71 @@
  * Adds a random fact about me to the page.
  */
 function addRandomFact() {
-    const facts =
-        ['I have a scar on the back of my head from when I fell backwards out of a chair when I was in 5th grade.',
-            'I backpacked through Portugal with a Catalan Troop.',
-            'I have 6 pets, 5 cats and 1 dog.',
-            'I forgot I was in the orchestra pit for "South Pacific."',
-            'I still have a baby tooth.',
-            "I've baked chocololate chip cookies for my entire highschool more than once."];
+  const facts =
+    ['I have a scar on the back of my head from when I fell backwards out of a chair when I was in 5th grade.',
+      'I backpacked through Portugal with a Catalan Troop.',
+      'I have 6 pets, 5 cats and 1 dog.',
+      'I forgot I was in the orchestra pit for "South Pacific."',
+      'I still have a baby tooth.',
+      "I've baked chocololate chip cookies for my entire highschool more than once."];
 
-    // Pick a random fact.
-    const fact = facts[Math.floor(Math.random() * facts.length)];
+  // Pick a random fact.
+  const fact = facts[Math.floor(Math.random() * facts.length)];
 
-    // Add it to the page.
-    const randomFactContainer = document.getElementById('random-fact-container');
-    randomFactContainer.innerText = fact;
+  // Add it to the page.
+  const randomFactContainer = document.getElementById('random-fact-container');
+  randomFactContainer.innerText = fact;
 }
 
 function addRandomFavorite() {
-    const favorites =
-        ['My favorite color is purple.',
-            'My favorite icecream flavor is cookie dough.',
-            'My favorite musical is "Next to Normal."',
-            'My favorite school subject was math.',
-            'My favorite song is currently "Nice to Meet Ya" by Niall Horan.'];
-    //Pick a random favorite
-    const favorite = favorites[Math.floor(Math.random() * favorites.length)];
+  const favorites =
+    ['My favorite color is purple.',
+      'My favorite icecream flavor is cookie dough.',
+      'My favorite musical is "Next to Normal."',
+      'My favorite school subject was math.',
+      'My favorite song is currently "Nice to Meet Ya" by Niall Horan.'];
+  //Pick a random favorite
+  const favorite = favorites[Math.floor(Math.random() * favorites.length)];
 
-    //Add it to the page
-    const randomFavoriteContainer = document.getElementById('random-favorite-container');
-    randomFavoriteContainer.innerText = favorite;
+  //Add it to the page
+  const randomFavoriteContainer = document.getElementById('random-favorite-container');
+  randomFavoriteContainer.innerText = favorite;
 
+}
+
+function changePageColor() {
+  var color = document.getElementById('colorChange').value;
+  console.log(color);
+  switch(color){
+    case 'blue':
+      document.body.style.backgroundColor = "lightblue";
+      changeImageBorders("dodgerblue");
+      break;
+    case 'red':
+      document.body.style.backgroundColor = "mistyrose";
+      changeImageBorders("lightcoral");
+      break;
+    case 'green':
+      document.body.style.backgroundColor = "mintcream";
+      changeImageBorders("darkseagreen");
+      break;
+    case 'pink':
+      document.body.style.backgroundColor = "pink";
+      changeImageBorders("violet");
+      break;
+    case 'yellow':
+      document.body.style.backgroundColor = "cornsilk";
+      changeImageBorders("khaki");
+      break; 
+    default:
+      document.body.style.backgroundColor = "lavender";
+      changeImageBorders("darkorchid");
+      break;
+    }
+}
+
+function changeImageBorders(color){
+  for(var i = 0; i < document.images.length; i++){
+    document.images.item(i).style.border = "10px solid " + color;
+  }
 }
