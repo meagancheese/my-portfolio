@@ -1,11 +1,15 @@
 #content {
-  margin-left: auto;
-  margin-right: auto;
-  width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 1200px;
 }
 
 #random-fact-container {
-  margin-top: 20px;
+    margin-top: 20px;
+}
+
+#random-favorite-container {
+    margin-top: 20px;
 }
 
 body {
