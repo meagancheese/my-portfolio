@@ -56,7 +56,7 @@ function addRandomFavorite() {
 }
 
 function changePageColor() {
-  var color = document.getElementById('colorChange').value;
+  let color = document.getElementById('colorChange').value;
   console.log(color);
   switch(color){
     case 'blue':
