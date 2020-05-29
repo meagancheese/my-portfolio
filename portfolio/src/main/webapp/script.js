@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-var factIndex = 0;
+let factIndex = 0;
 
 /**
  * Adds a random fact about me to the page.
@@ -36,7 +36,7 @@ function addRandomFact() {
   factIndex++;
 }
 
-var favoriteIndex = 0;
+let favoriteIndex = 0;
 
 function addRandomFavorite() {
   const favorites =
