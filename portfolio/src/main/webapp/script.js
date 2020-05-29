@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+var factIndex = 0;
+
 /**
  * Adds a random fact about me to the page.
  */
@@ -25,12 +27,16 @@ function addRandomFact() {
      'I have baked chocololate chip cookies for my entire highschool more than once.'];
 
   // Pick a random fact.
-  const fact = facts[Math.floor(Math.random() * facts.length)];
+  const fact = facts[factIndex % 6];
 
   // Add it to the page.
   const randomFactContainer = document.getElementById('random-fact-container');
   randomFactContainer.innerText = fact;
+  
+  factIndex++;
 }
+
+var favoriteIndex = 0;
 
 function addRandomFavorite() {
   const favorites =
@@ -40,12 +46,13 @@ function addRandomFavorite() {
      'My favorite school subject was math.',
      'My favorite song is currently "Nice to Meet Ya" by Niall Horan.'];
   //Pick a random favorite
-  const favorite = favorites[Math.floor(Math.random() * favorites.length)];
+  const favorite = favorites[favoriteIndex % 5];
 
   //Add it to the page
   const randomFavoriteContainer = document.getElementById('random-favorite-container');
   randomFavoriteContainer.innerText = favorite;
 
+  favoriteIndex++;
 }
 
 function changePageColor() {
