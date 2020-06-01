@@ -93,6 +93,6 @@ function changeImageBorders(color){
 }
 
 function sayHi() {
-  fetch('/data').then(response => response.text()).then(
+  fetch('/data').then(response => response.text()).then( unused =>
     document.getElementById('greeting-container').innerText = 'Hello Meagan!');
 }
