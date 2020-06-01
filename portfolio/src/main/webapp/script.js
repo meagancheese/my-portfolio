@@ -91,3 +91,8 @@ function changeImageBorders(color){
     document.images.item(i).style.border = "10px solid " + color;
   }
 }
+
+function sayHi() {
+  fetch('/data').then(response => response.text()).then(
+    document.getElementById('greeting-container').innerText = 'Hello Meagan!');
+}
