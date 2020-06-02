@@ -26,12 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   
-  private ArrayList<String> messages;
-  
-  @Override
-  public void init() {
-    messages = new ArrayList<String>();
-  }
+  private ArrayList<String> messages = new ArrayList<String>();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -44,7 +39,7 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String comment = request.getParameter("comment");
-    //To-Do: Add Sanitization Step
+    //TODO(meagancheese): Add Sanitization Step
     messages.add(comment);
     response.sendRedirect("/index.html");
   }
