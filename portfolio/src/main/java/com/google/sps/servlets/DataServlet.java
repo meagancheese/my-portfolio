@@ -33,10 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   
-  @Override
-  public void init(){
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  }
+  final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
