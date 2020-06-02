@@ -93,7 +93,7 @@ function changeImageBorders(color){
 }
 
 function sendMessages() {
-  fetch('/data').then(response => response.json()).then( messages => {
+  fetch('/data').then(response => response.json()).then(messages => {
     const messagesElement = document.getElementById('messages-container');
     messagesElement.innerText = messages[0] + ' ' + messages[1] + ' ' + messages[2];
   });
