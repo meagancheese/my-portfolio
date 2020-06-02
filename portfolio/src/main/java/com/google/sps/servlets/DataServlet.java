@@ -31,9 +31,6 @@ public class DataServlet extends HttpServlet {
   @Override
   public void init() {
     messages = new ArrayList<String>();
-    messages.add("Lovely weather we're having.");
-    messages.add("How was your day?");
-    messages.add("Honey, I'm home!");
   }
 
   @Override
@@ -42,5 +39,13 @@ public class DataServlet extends HttpServlet {
     String jsonMessages = gson.toJson(messages);
     response.setContentType("application/json;");
     response.getWriter().println(jsonMessages);
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String comment = request.getParameter("comment");
+    //To-Do: Add Sanitization Step
+    messages.add(comment);
+    response.sendRedirect("/index.html");
   }
 }
