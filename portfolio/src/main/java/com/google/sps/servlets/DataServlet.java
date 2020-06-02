@@ -39,7 +39,7 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    //TODO(meagancheese): Add Sanitization Step
+    // TODO(meagancheese): Add Sanitization Step
     messages.add(request.getParameter("comment"));
     response.sendRedirect("/index.html");
   }
