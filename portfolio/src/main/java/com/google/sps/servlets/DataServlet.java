@@ -34,10 +34,10 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
   
   private Query query = new Query("Comment");
+  private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
     List<String> messages = new ArrayList<String>();
     for(Entity entity : results.asIterable()){
@@ -55,7 +55,6 @@ public class DataServlet extends HttpServlet {
     // TODO(meagancheese): Add Sanitization Step
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("text", comment);
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
     response.sendRedirect("/index.html");
   }
