@@ -31,9 +31,9 @@ public class DataServlet extends HttpServlet {
   @Override
   public void init() {
     messages = new ArrayList<String>();
-    messages.add("Lovely weather we\'re having");
+    messages.add("Lovely weather we're having.");
     messages.add("How was your day?");
-    messages.add("Honey, I\'m home!");
+    messages.add("Honey, I'm home!");
   }
 
   @Override

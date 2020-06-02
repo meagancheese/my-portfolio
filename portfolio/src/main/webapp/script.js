@@ -92,7 +92,9 @@ function changeImageBorders(color){
   }
 }
 
-function sayHi() {
-  fetch('/data').then(response => response.text()).then( unused =>
-    document.getElementById('greeting-container').innerText = 'Hello Meagan!');
+function sendMessages() {
+  fetch('/data').then(response => response.json()).then( messages => {
+    const messagesElement = document.getElementById('messages-container');
+    messagesElement.innerText = messages[0] + ' ' + messages[1] + ' ' + messages[2];
+  });
 }
