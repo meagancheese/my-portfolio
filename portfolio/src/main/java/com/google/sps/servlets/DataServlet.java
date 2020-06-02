@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,15 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   
-  private ArrayList<String> messages;
-  
-  @Override
-  public void init() {
-    messages = new ArrayList<String>();
-    messages.add("Lovely weather we're having.");
-    messages.add("How was your day?");
-    messages.add("Honey, I'm home!");
-  }
+  private List<String> messages = new ArrayList<String>();
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -42,5 +35,12 @@ public class DataServlet extends HttpServlet {
     String jsonMessages = gson.toJson(messages);
     response.setContentType("application/json;");
     response.getWriter().println(jsonMessages);
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // TODO(meagancheese): Add Sanitization Step
+    messages.add(request.getParameter("comment"));
+    response.sendRedirect("/index.html");
   }
 }

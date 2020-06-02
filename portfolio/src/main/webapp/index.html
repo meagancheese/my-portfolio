@@ -7,10 +7,9 @@
   <link rel="stylesheet" href="style.css">
   <script src="script.js"></script>
 </head>
-<body onload="sendMessages()">
+<body onload="loadComments()">
   <div id="content">
     <h1>Meagan Konst's Portfolio</h1>
-    <h1 id="messages-container"></h1>
     <img src="/images/Selfie.jpg" alt="Meagan Selfie" width="300" height="400" class="center"/>
     <div id="smallContent">
       <h2>Intro</h2>
@@ -96,6 +95,16 @@
       <h3>Sugar</h3>
       <img src="/images/Norman.jpeg" alt="Norman" width="400" height="225" class="center"/>
       <h3>Norman</h3>
+      <h2>Comments Section</h2>
+      <div id="comments">
+        <ul id="comments-section"></ul>
+      </div>
+      <p>To submit a comment, type in the box below and then click the Submit button.</p>
+      <form action="/data" method="POST">
+        <label for="comment">New Comment:</label>
+        <input type="text" name="comment"/>
+        <input type="submit"/>
+      </form>
     </div>
   </div>
 </body>

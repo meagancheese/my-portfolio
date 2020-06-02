@@ -92,9 +92,18 @@ function changeImageBorders(color){
   }
 }
 
-function sendMessages() {
-  fetch('/data').then(response => response.json()).then(messages => {
-    const messagesElement = document.getElementById('messages-container');
-    messagesElement.innerText = messages[0] + ' ' + messages[1] + ' ' + messages[2];
+function loadComments() {
+  fetch('/data').then(response => response.json()).then(comments => {
+    const commentsElement = document.getElementById('comments-section');
+    commentsElement.innerHTML = '';
+    for(let i=0; i < comments.length; i++){
+      commentsElement.appendChild(createListElement(comments[i]));
+    }
   });
+}
+
+function createListElement(text) {
+  const liElement = document.createElement('li');
+  liElement.innerText = text;
+  return liElement;
 }
