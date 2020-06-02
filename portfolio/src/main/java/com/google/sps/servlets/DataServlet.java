@@ -35,7 +35,7 @@ public class DataServlet extends HttpServlet {
   
   @Override
   public void init(){
-    private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
   }
   
   @Override
