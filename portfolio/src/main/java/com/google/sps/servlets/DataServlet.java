@@ -14,6 +14,9 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,8 +42,13 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String comment = request.getParameter("comment");
     // TODO(meagancheese): Add Sanitization Step
-    messages.add(request.getParameter("comment"));
+    messages.add(comment);
+    Entity commentEntity = new Entity("Comment");
+    commentEntity.setProperty("text", comment);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(commentEntity);
     response.sendRedirect("/index.html");
   }
 }
