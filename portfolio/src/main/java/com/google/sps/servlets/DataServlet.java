@@ -17,6 +17,9 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,10 +33,20 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   
-  private List<String> messages = new ArrayList<String>();
-
+  private DatastoreService datastore;
+  
+  @Override
+  public void init(){
+    datastore = DatastoreServiceFactory.getDatastoreService();
+  }
+  
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    PreparedQuery results = datastore.prepare(new Query("Comment"));
+    List<String> messages = new ArrayList<String>();
+    for(Entity entity : results.asIterable()){
+      messages.add((String) entity.getProperty("text"));
+    }
     final Gson gson = new Gson();
     String jsonMessages = gson.toJson(messages);
     response.setContentType("application/json;");
@@ -44,10 +57,8 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String comment = request.getParameter("comment");
     // TODO(meagancheese): Add Sanitization Step
-    messages.add(comment);
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("text", comment);
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
     response.sendRedirect("/index.html");
   }
