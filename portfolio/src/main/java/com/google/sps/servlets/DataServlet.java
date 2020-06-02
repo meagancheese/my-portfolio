@@ -57,9 +57,32 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String comment = request.getParameter("comment");
     // TODO(meagancheese): Add Sanitization Step
+    int max = getMax(response);
+    if (max == -1) {
+      response.setContentType("text/html");
+      response.getWriter().println("Please enter a valid integer number greater than zero.");
+      return;
+    }
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("text", comment);
     datastore.put(commentEntity);
     response.sendRedirect("/index.html");
+  }
+  
+  private int getMax(HttpServletRequest request) {
+    String maxString = request.getParameter("max");
+    int max;
+    try{
+      max = Integer.parseInt(maxString);
+    }
+    catch(NumberFormatException e) {
+      System.err.println("Could not convert to int: " + maxString);
+      return -1;
+    }
+    if(max <= 0){
+      System.err.println("Is not a valid maximum: " + maxString);
+      return -1;
+    }
+    return max;
   }
 }
