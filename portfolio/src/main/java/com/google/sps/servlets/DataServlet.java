@@ -28,6 +28,7 @@ public class DataServlet extends HttpServlet {
   
   private ArrayList<String> messages;
   
+  @Override
   public void init() {
     messages = new ArrayList<String>();
     messages.add("Lovely weather we\'re having");
@@ -37,7 +38,6 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    init();
     Gson gson = new Gson();
     String jsonMessages = gson.toJson(messages);
     response.setContentType("application/json;");
