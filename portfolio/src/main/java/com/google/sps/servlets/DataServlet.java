@@ -33,12 +33,14 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   
-  private Query query = new Query("Comment");
-  private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
+  @Override
+  public void init(){
+    private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  }
+  
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    PreparedQuery results = datastore.prepare(query);
+    PreparedQuery results = datastore.prepare(new Query("Comment"));
     List<String> messages = new ArrayList<String>();
     for(Entity entity : results.asIterable()){
       messages.add((String) entity.getProperty("text"));
