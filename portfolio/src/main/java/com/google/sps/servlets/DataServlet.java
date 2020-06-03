@@ -50,7 +50,7 @@ public class DataServlet extends HttpServlet {
     List<Entity> results = datastore.prepare(new Query("Comment")).asList(FetchOptions.Builder.withLimit(max));
     List<String> messages = new ArrayList<String>();
     for(Entity entity : results){
-      messages.add((String) entity.getProperty("text"));
+      messages.add((String)entity.getProperty("text"));
     }
     final Gson gson = new Gson();
     String jsonMessages = gson.toJson(messages);
