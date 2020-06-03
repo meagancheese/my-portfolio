@@ -58,7 +58,7 @@ public class DataServlet extends HttpServlet {
     String comment = request.getParameter("comment");
     // TODO(meagancheese): Add Sanitization Step
     int max = getMax(response);
-    if (max == -1) {
+    if (max <= 0) {
       response.setContentType("text/html");
       response.getWriter().println("Please enter a valid integer number greater than zero.");
       return;
@@ -77,10 +77,6 @@ public class DataServlet extends HttpServlet {
     }
     catch(NumberFormatException e) {
       System.err.println("Could not convert to int: " + maxString);
-      return -1;
-    }
-    if(max <= 0){
-      System.err.println("Is not a valid maximum: " + maxString);
       return -1;
     }
     return max;
