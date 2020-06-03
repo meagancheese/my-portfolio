@@ -94,9 +94,10 @@ function changeImageBorders(color){
 
 function loadComments() {
   fetch('/data').then(response => response.json()).then(comments => {
+    const max = parseInt(comments[0]);
     const commentsElement = document.getElementById('comments-section');
     commentsElement.innerHTML = '';
-    for(let i=0; i < comments.length; i++){
+    for(let i=1; i <= max && i < comments.length - 1; i++){
       commentsElement.appendChild(createListElement(comments[i]));
     }
   });

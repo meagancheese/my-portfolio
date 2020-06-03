@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
   
   private DatastoreService datastore;
+  private int max;
   
   @Override
   public void init(){
@@ -47,6 +48,8 @@ public class DataServlet extends HttpServlet {
     for(Entity entity : results.asIterable()){
       messages.add((String) entity.getProperty("text"));
     }
+    messages.add(0, Integer.toString(max));
+    // messages.add(0, max); Doesn't work because max isn't a String
     final Gson gson = new Gson();
     String jsonMessages = gson.toJson(messages);
     response.setContentType("application/json;");
@@ -57,7 +60,7 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String comment = request.getParameter("comment");
     // TODO(meagancheese): Add Sanitization Step
-    int max = getMax(response);
+    max = getMax(request);
     if (max <= 0) {
       response.setContentType("text/html");
       response.getWriter().println("Please enter a valid integer number greater than zero.");
