@@ -71,13 +71,11 @@ public class DataServlet extends HttpServlet {
   
   private int getMax(HttpServletRequest request) {
     String maxString = request.getParameter("max");
-    int max;
     try {
-      max = Integer.parseInt(maxString);
+      return Integer.parseInt(maxString);
     } catch(NumberFormatException e) {
       System.err.println("Could not convert to int: " + maxString);
       return -1;
     }
-    return max;
   }
 }
