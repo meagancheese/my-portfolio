@@ -96,6 +96,14 @@
       <img src="/images/Norman.jpeg" alt="Norman" width="400" height="225" class="center"/>
       <h3>Norman</h3>
       <h2>Comments Section</h2>
+      <p>To select a maximum number of comments to be displayed, type a number in the box below 
+        and then click the Submit button.
+      </p>
+      <form action="/data" method="POST">
+        <label for="max">Maxinum Number:</label>
+        <input type="number" name="max" step="1"/>
+        <input type="submit"/>
+      </form>
       <div id="comments">
         <ul id="comments-section"></ul>
       </div>
