@@ -99,11 +99,11 @@
       <p>To select a maximum number of comments to be displayed, type a number in the box below 
         and then click the Submit button.
       </p>
-      <form action="/data" method="POST">
+      <div>
         <label for="max">Maxinum Number:</label>
-        <input type="number" name="max" step="1"/>
-        <input type="submit"/>
-      </form>
+        <input id="maxButton" type="number" name="max" step="1"/>
+        <button onclick="loadComments()">Submit</button>
+      </div>
       <div id="comments">
         <ul id="comments-section"></ul>
       </div>
