@@ -93,11 +93,11 @@ function changeImageBorders(color){
 }
 
 function loadComments() {
-  fetch('/data').then(response => response.json()).then(comments => {
-    const max = parseInt(comments[0]);
+  let max = document.getElementById('maxButton').value;
+  fetch('/data?max=' + max).then(response => response.json()).then(comments => {
     const commentsElement = document.getElementById('comments-section');
     commentsElement.innerHTML = '';
-    for(let i=1; i <= max && i < comments.length - 1; i++){
+    for(let i=0; i < comments.length; i++){
       commentsElement.appendChild(createListElement(comments[i]));
     }
   });

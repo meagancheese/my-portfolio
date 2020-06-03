@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
@@ -34,7 +35,6 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
   
   private DatastoreService datastore;
-  private int max;
   
   @Override
   public void init(){
@@ -43,13 +43,15 @@ public class DataServlet extends HttpServlet {
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    PreparedQuery results = datastore.prepare(new Query("Comment"));
+    int max = getMax(request);
+    if (max < 0) {
+      max = 5; // Default
+    }
+    List<Entity> results = datastore.prepare(new Query("Comment")).asList(FetchOptions.Builder.withLimit(max));
     List<String> messages = new ArrayList<String>();
-    for(Entity entity : results.asIterable()){
+    for(Entity entity : results){
       messages.add((String) entity.getProperty("text"));
     }
-    messages.add(0, Integer.toString(max));
-    // messages.add(0, max); Doesn't work because max isn't a String
     final Gson gson = new Gson();
     String jsonMessages = gson.toJson(messages);
     response.setContentType("application/json;");
@@ -60,12 +62,6 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String comment = request.getParameter("comment");
     // TODO(meagancheese): Add Sanitization Step
-    max = getMax(request);
-    if (max <= 0) {
-      response.setContentType("text/html");
-      response.getWriter().println("Please enter a valid integer number greater than zero.");
-      return;
-    }
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("text", comment);
     datastore.put(commentEntity);
@@ -74,6 +70,9 @@ public class DataServlet extends HttpServlet {
   
   private int getMax(HttpServletRequest request) {
     String maxString = request.getParameter("max");
+    if(maxString == null){
+      return 5; //Default
+    }
     try {
       return Integer.parseInt(maxString);
     } catch(NumberFormatException e) {
