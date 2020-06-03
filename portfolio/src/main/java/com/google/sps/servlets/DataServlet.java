@@ -74,8 +74,7 @@ public class DataServlet extends HttpServlet {
     int max;
     try {
       max = Integer.parseInt(maxString);
-    }
-    catch(NumberFormatException e) {
+    } catch(NumberFormatException e) {
       System.err.println("Could not convert to int: " + maxString);
       return -1;
     }
