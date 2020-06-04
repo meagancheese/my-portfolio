@@ -108,3 +108,8 @@ function createListElement(text) {
   liElement.innerText = text;
   return liElement;
 }
+
+function deleteComments() {
+  let request = new Request('/delete-data', {method:'POST'});
+  fetch(request).then(unused => loadComments());
+}
