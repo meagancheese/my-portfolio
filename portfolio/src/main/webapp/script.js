@@ -94,8 +94,10 @@ function changeBordersColor(color){
 }
 
 function loadComments() {
+  console.log('loadComments starts');
   let max = document.getElementById('maxButton').value;
   fetch('/data?max=' + max).then(response => response.json()).then(comments => {
+    // console.log(comments); DEBUG Tool
     const commentsElement = document.getElementById('comments-section');
     commentsElement.innerHTML = '';
     for(let i=0; i < comments.length; i++){
@@ -108,4 +110,9 @@ function createListElement(text) {
   const liElement = document.createElement('li');
   liElement.innerText = text;
   return liElement;
+}
+
+function deleteComments() {
+  let request = new Request('/delete-data', {method:'DELETE'});
+  fetch(request).then(unused => {/*console.log('Delete finishes'); DEBUG Tool*/loadComments()});
 }
