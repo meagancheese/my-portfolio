@@ -47,7 +47,8 @@ public class DataServlet extends HttpServlet {
     if (max < 0) {
       max = 5; // Default
     }
-    List<Entity> results = datastore.prepare(new Query("Comment").addSort("timestamp", SortDirection.ASCENDING)).asList(FetchOptions.Builder.withLimit(max));
+    List<Entity> results = datastore.prepare(new Query("Comment").addSort("timestamp", SortDirection.ASCENDING))
+      .asList(FetchOptions.Builder.withLimit(max));
     List<String> messages = new ArrayList<String>();
     for(Entity entity : results){
       messages.add((String)entity.getProperty("text"));
