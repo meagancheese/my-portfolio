@@ -114,7 +114,6 @@ public class DataServlet extends HttpServlet {
       System.out.println(e);
       }
       
-    List<Entity> results = datastore.prepare(new Query("Comment")).asList(FetchOptions.Builder.withLimit(max));
     List<String> messages = new ArrayList<String>();
     for(Entity entity : results){
       messages.add((String)entity.getProperty("text"));
