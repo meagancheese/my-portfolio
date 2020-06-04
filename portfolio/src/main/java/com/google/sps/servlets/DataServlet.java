@@ -102,23 +102,23 @@ public class DataServlet extends HttpServlet {
     String jsonMessages = "";
     int max = getMax(request);
     // for(int i=0; i < 10; i++){ // DEBUG Tool
-      if (max < 0) {
-        max = 5; // Default
+    if (max < 0) {
+      max = 5; // Default
+    }
+      
+    try {
+      java.lang.Thread.sleep(1200);
+    } catch (Exception e) {
+      System.out.println(e);
       }
       
-      try {
-        java.lang.Thread.sleep(1200);
-      } catch (Exception e) {
-        System.out.println(e);
-        }
-      
-      List<Entity> results = datastore.prepare(new Query("Comment")).asList(FetchOptions.Builder.withLimit(max));
-      List<String> messages = new ArrayList<String>();
-      for(Entity entity : results){
-        messages.add((String)entity.getProperty("text"));
-      }
-      final Gson gson = new Gson();
-      jsonMessages = gson.toJson(messages);
+    List<Entity> results = datastore.prepare(new Query("Comment")).asList(FetchOptions.Builder.withLimit(max));
+    List<String> messages = new ArrayList<String>();
+    for(Entity entity : results){
+      messages.add((String)entity.getProperty("text"));
+    }
+    final Gson gson = new Gson();
+    jsonMessages = gson.toJson(messages);
      // System.out.println("DEBUG: " + i + " " + jsonMessages); // DEBUG Tool
     // } // DEBUG Tool
     response.setContentType("application/json;");
