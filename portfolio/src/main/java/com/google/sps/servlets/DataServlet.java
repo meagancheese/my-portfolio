@@ -19,6 +19,8 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Transaction;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
@@ -30,7 +32,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   
@@ -43,20 +44,89 @@ public class DataServlet extends HttpServlet {
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // System.out.println("Calls doGet"); DEBUG Tool
+    /*
+    // Testing 1 2 3 
+    for(int i = 0; i < 10; i++){
+      Entity testEnt = new Entity("Test");
+      testEnt.setProperty("runNumber", i);
+      Transaction txn = datastore.beginTransaction();
+      datastore.put(txn, testEnt);
+      txn.commit();
+      System.out.println("TEST: This P U T run: " + testEnt.getProperty("runNumber"));
+      for(Entity entity : datastore.prepare(new Query("Test")).asIterable()){
+        System.out.println("TEST: This GOT run: " + entity.getProperty("runNumber"));
+      }
+    }
+   List<Entity> testList = new ArrayList<>();
+   for(Entity test : datastore.prepare(new Query("Test")).asIterable()){
+     testList.add(test);
+   }
+   
+    for(Entity test : testList){
+      Transaction txn = datastore.beginTransaction();
+      datastore.delete(txn, test.getKey());
+      txn.commit();
+      System.out.println(test.getProperty("runNumber"));
+    }
+    
+  /*  try {
+          java.lang.Thread.sleep(200);
+         } catch (Exception e) {
+            System.out.println(e);
+         }
+         
+    System.out.println("After delete, datastore sees these: ");
+    for(Entity entity : datastore.prepare(new Query("Test")).asIterable()){
+      System.out.println(entity.getProperty("runNumber"));
+    }
+    try {
+          java.lang.Thread.sleep(1000);
+         } catch (Exception e) {
+            System.out.println(e);
+         }
+         
+    System.out.println("After delete, datastore sees these: ");
+    for(Entity entity : datastore.prepare(new Query("Test")).asIterable()){
+      System.out.println(entity.getProperty("runNumber"));
+    }
+    */
+    //End Testing
+    
+    
+    // Temporarily comments out the base of my code to just test doGet placing and retrieving info from datastore
+    //if(true){ //Comments out code
+    //  return; //
+    //}         //
+    
+    String jsonMessages = "";
     int max = getMax(request);
+    // for(int i=0; i < 10; i++){ // DEBUG Tool
     if (max < 0) {
       max = 5; // Default
     }
     List<Entity> results = datastore.prepare(new Query("Comment").addSort("timestamp_millis", SortDirection.ASCENDING))
       .asList(FetchOptions.Builder.withLimit(max));
+      
+    try {
+      java.lang.Thread.sleep(1200);
+    } catch (Exception e) {
+      System.out.println(e);
+      }
+      
+    List<Entity> results = datastore.prepare(new Query("Comment")).asList(FetchOptions.Builder.withLimit(max));
     List<String> messages = new ArrayList<String>();
     for(Entity entity : results){
       messages.add((String)entity.getProperty("text"));
     }
     final Gson gson = new Gson();
-    String jsonMessages = gson.toJson(messages);
+    jsonMessages = gson.toJson(messages);
+     // System.out.println("DEBUG: " + i + " " + jsonMessages); // DEBUG Tool
+    // } // DEBUG Tool
     response.setContentType("application/json;");
     response.getWriter().println(jsonMessages);
+    
+    
   }
 
   @Override
@@ -67,19 +137,21 @@ public class DataServlet extends HttpServlet {
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("text", comment);
     commentEntity.setProperty("timestamp_millis", timestampMillis);
-    datastore.put(commentEntity);
+    Transaction txn = datastore.beginTransaction();
+    datastore.put(txn, commentEntity);
+    txn.commit();
+    // System.out.println("DEBUG: Sent to datastore " + comment); // DEBUG Tool
     response.sendRedirect("/index.html");
   }
   
   private int getMax(HttpServletRequest request) {
     String maxString = request.getParameter("max");
     if(maxString == null){
-      return 5; //Default
+      return 5; // Default
     }
     try {
       return Integer.parseInt(maxString);
     } catch(NumberFormatException e) {
-      System.err.println("Could not convert to int: " + maxString);
       return -1;
     }
   }
