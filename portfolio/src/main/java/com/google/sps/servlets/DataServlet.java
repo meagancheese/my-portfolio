@@ -47,7 +47,7 @@ public class DataServlet extends HttpServlet {
     if (max < 0) {
       max = 5; // Default
     }
-    List<Entity> results = datastore.prepare(new Query("Comment").addSort("timestamp", SortDirection.ASCENDING))
+    List<Entity> results = datastore.prepare(new Query("Comment").addSort("timestamp_millis", SortDirection.ASCENDING))
       .asList(FetchOptions.Builder.withLimit(max));
     List<String> messages = new ArrayList<String>();
     for(Entity entity : results){
@@ -66,7 +66,7 @@ public class DataServlet extends HttpServlet {
     // TODO(meagancheese): Add Sanitization Step
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("text", comment);
-    commentEntity.setProperty("timestamp", timestampMillis);
+    commentEntity.setProperty("timestamp_millis", timestampMillis);
     datastore.put(commentEntity);
     response.sendRedirect("/index.html");
   }
