@@ -47,7 +47,7 @@ public class DataServlet extends HttpServlet {
     if (max < 0) {
       max = 5; // Default
     }
-    List<Entity> results = datastore.prepare(new Query("Comment")).asList(FetchOptions.Builder.withLimit(max));
+    List<Entity> results = datastore.prepare(new Query("Comment").addSort("timestamp", SortDirection.ASCENDING)).asList(FetchOptions.Builder.withLimit(max));
     List<String> messages = new ArrayList<String>();
     for(Entity entity : results){
       messages.add((String)entity.getProperty("text"));
@@ -60,10 +60,12 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    long timestamp = System.currentTimeMillis();
     String comment = request.getParameter("comment");
     // TODO(meagancheese): Add Sanitization Step
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("text", comment);
+    commentEntity.setProperty("timestamp", timestamp);
     datastore.put(commentEntity);
     response.sendRedirect("/index.html");
   }
