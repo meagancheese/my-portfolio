@@ -30,8 +30,7 @@ public class DeleteDataServlet extends HttpServlet {
   }
   
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // List<Entity> results = datastore.prepare(new Query("Comment")).asIterable();
+  public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
     List<Key> keys = new ArrayList<Key>();
     for(Entity entity : datastore.prepare(new Query("Comment")).asIterable()){
       keys.add(entity.getKey());

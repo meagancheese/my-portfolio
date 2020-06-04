@@ -110,6 +110,6 @@ function createListElement(text) {
 }
 
 function deleteComments() {
-  let request = new Request('/delete-data', {method:'POST'});
+  let request = new Request('/delete-data', {method:'DELETE'});
   fetch(request).then(unused => loadComments());
 }
