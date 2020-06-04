@@ -61,35 +61,36 @@ function changePageColor() {
   switch(color){
     case 'blue':
       document.body.style.backgroundColor = "lightblue";
-      changeImageBorders("dodgerblue");
+      changeBordersColor("dodgerblue");
       break;
     case 'red':
       document.body.style.backgroundColor = "mistyrose";
-      changeImageBorders("lightcoral");
+      changeBordersColor("lightcoral");
       break;
     case 'green':
       document.body.style.backgroundColor = "mintcream";
-      changeImageBorders("darkseagreen");
+      changeBordersColor("darkseagreen");
       break;
     case 'pink':
       document.body.style.backgroundColor = "pink";
-      changeImageBorders("violet");
+      changeBordersColor("violet");
       break;
     case 'yellow':
       document.body.style.backgroundColor = "cornsilk";
-      changeImageBorders("khaki");
+      changeBordersColor("khaki");
       break; 
     default:
       document.body.style.backgroundColor = "lavender";
-      changeImageBorders("darkorchid");
+      changeBordersColor("darkorchid");
       break;
     }
 }
 
-function changeImageBorders(color){
+function changeBordersColor(color){
   for(var i = 0; i < document.images.length; i++){
     document.images.item(i).style.border = "10px solid " + color;
   }
+  document.getElementById('comments').style.border = "5px solid " + color;
 }
 
 function loadComments() {
@@ -100,7 +101,7 @@ function loadComments() {
     const commentsElement = document.getElementById('comments-section');
     commentsElement.innerHTML = '';
     for(let i=0; i < comments.length; i++){
-      commentsElement.appendChild(createListElement(comments[i]));
+      commentsElement.appendChild(createListElement('"' + comments[i] + '"'));
     }
   });
 }
