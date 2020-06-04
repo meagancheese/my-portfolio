@@ -8,6 +8,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Transaction;
+import com.google.appengine.api.datastore.TransactionOptions;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
@@ -31,12 +33,12 @@ public class DeleteDataServlet extends HttpServlet {
   
   @Override
   public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    List<Key> keys = new ArrayList<Key>();
-    for(Entity entity : datastore.prepare(new Query("Comment")).asIterable()){
-      keys.add(entity.getKey());
+    List<Key> keyList = new ArrayList<>();
+    for(Entity entity : datastore.prepare(new Query("Comment").setKeysOnly()).asIterable()){
+      keyList.add(entity.getKey());
     }
-    for(Key key : keys){
-      datastore.delete(key);
-    }
+    Transaction txn = datastore.beginTransaction(TransactionOptions.Builder.withXG(true));
+    datastore.delete(txn, keyList);
+    txn.commit();
   }
 }
