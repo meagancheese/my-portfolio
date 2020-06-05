@@ -116,7 +116,10 @@ public class DataServlet extends HttpServlet {
       
     List<String> messages = new ArrayList<String>();
     for(Entity entity : results){
-      messages.add((String)entity.getProperty("text"));
+      String text = (String)entity.getProperty("text");
+      String name = (String)entity.getProperty("name");
+      String comment = "\"" + text + "\" - " + name;
+      messages.add(comment);
     }
     final Gson gson = new Gson();
     jsonMessages = gson.toJson(messages);
@@ -132,10 +135,15 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long timestampMillis = System.currentTimeMillis();
     String comment = request.getParameter("comment");
+    String name = request.getParameter("name");
+    if(name.equals("")){
+      name = "Anonymous";
+    }
     // TODO(meagancheese): Add Sanitization Step
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("text", comment);
     commentEntity.setProperty("timestamp_millis", timestampMillis);
+    commentEntity.setProperty("name", name);
     Transaction txn = datastore.beginTransaction();
     datastore.put(txn, commentEntity);
     txn.commit();
