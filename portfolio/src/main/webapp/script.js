@@ -94,10 +94,8 @@ function changeBordersColor(color){
 }
 
 function loadComments() {
-  console.log('loadComments starts');
-  let max = document.getElementById('maxButton').value;
-  addPageButtons(max);
-  fetch('/data?max=' + max).then(response => response.json()).then(comments => {
+  // console.log('loadComments starts'); DEBUG Tool
+  fetch('/data').then(response => response.json()).then(comments => {
     // console.log(comments); DEBUG Tool
     const commentsElement = document.getElementById('comments-section');
     commentsElement.innerHTML = '';
@@ -118,6 +116,6 @@ function deleteComments() {
   fetch(request).then(unused => {/*console.log('Delete finishes'); DEBUG Tool*/loadComments()});
 }
 
-function addPageButtons(max) {
+function addPageButtons() {
   
 }
