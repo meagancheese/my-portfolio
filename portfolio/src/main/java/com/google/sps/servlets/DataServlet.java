@@ -118,7 +118,7 @@ public class DataServlet extends HttpServlet {
     for(Entity entity : results){
       String text = (String)entity.getProperty("text");
       String name = (String)entity.getProperty("name");
-      String comment = "\"" + text + "\" - " + name;
+      String comment = String.format("\"%s\" - %s", text, name);
       messages.add(comment);
     }
     final Gson gson = new Gson();
