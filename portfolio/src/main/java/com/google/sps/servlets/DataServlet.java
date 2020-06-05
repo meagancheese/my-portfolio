@@ -105,7 +105,7 @@ public class DataServlet extends HttpServlet {
     if (max < 0) {
       max = 5; // Default
     }
-    List<Entity> results = datastore.prepare(new Query("Comment").addSort("timestamp_millis", SortDirection.ASCENDING))
+    List<Entity> results = datastore.prepare(new Query("Comment").addSort("timestamp_millis", SortDirection.DESCENDING))
       .asList(FetchOptions.Builder.withLimit(max));
       
     try {
