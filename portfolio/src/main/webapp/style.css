@@ -47,3 +47,7 @@ h3 {
 #comments-section {
   list-style-type: none;
 }
+
+#nameLabel {
+  padding-right: 24px;
+}

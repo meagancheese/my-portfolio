@@ -101,7 +101,7 @@ function loadComments() {
     const commentsElement = document.getElementById('comments-section');
     commentsElement.innerHTML = '';
     for(let i=0; i < comments.length; i++){
-      commentsElement.appendChild(createListElement('"' + comments[i] + '"'));
+      commentsElement.appendChild(createListElement(comments[i]));
     }
   });
 }
