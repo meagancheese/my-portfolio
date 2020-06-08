@@ -29,7 +29,6 @@ public class LogInServlet extends HttpServlet {
     response.setContentType("application/json;");
     UserService userService = UserServiceFactory.getUserService();
     boolean loggedIn = userService.isUserLoggedIn();
-    final Gson gson = new Gson();
-    response.getWriter().println(gson.toJson(loggedIn));
+    response.getWriter().println(new Gson().toJson(loggedIn));
   }  
 }
