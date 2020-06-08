@@ -181,7 +181,7 @@ function goForward() {
 function loadPage(pageNumber) {
   const commentsElement = document.getElementById('comments-section');
   commentsElement.innerHTML = '';
-  let startingCommentNumber = (pageNumber - 1)*5;
+  let startingCommentNumber = (pageNumber - 1) * 5;
   for(let i=startingCommentNumber; i < startingCommentNumber + 5 && i < numberOfComments; i++){
     commentsElement.appendChild(createListElement(commentsExternal[i]));
   }
