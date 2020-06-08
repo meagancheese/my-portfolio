@@ -29,7 +29,7 @@ public class LogInServlet extends HttpServlet {
     response.setContentType("text/html");
 
     UserService userService = UserServiceFactory.getUserService();
-    if(userService.isUserLoggedIn()){
+    if (userService.isUserLoggedIn()) {
       String name = userService.getCurrentUser().getNickname();
       response.getWriter().println("<p>Hi " + name + "! You're logged in!</p>");
     } else {
