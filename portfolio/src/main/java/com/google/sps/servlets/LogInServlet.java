@@ -27,15 +27,8 @@ public class LogInServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json;");
-    boolean loggedIn;
-
     UserService userService = UserServiceFactory.getUserService();
-    if (userService.isUserLoggedIn()) {
-      loggedIn = true;
-    } else {
-      loggedIn = false;
-    }
-    
+    boolean loggedIn = userService.isUserLoggedIn();
     final Gson gson = new Gson();
     String jsonLoginStatus = gson.toJson(loggedIn);
     response.getWriter().println(jsonLoginStatus);
