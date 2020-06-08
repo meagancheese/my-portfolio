@@ -93,16 +93,18 @@ function changeBordersColor(color){
   document.getElementById('comments').style.border = "5px solid " + color;
 }
 
+let page = 1;
+let numberOfPages = 0;
+let numberOfComments = 0;
+let commentsExternal = [];
+
 function loadComments() {
-  console.log('loadComments starts');
-  let max = document.getElementById('maxButton').value;
-  fetch('/data?max=' + max).then(response => response.json()).then(comments => {
+  // console.log('loadComments starts'); DEBUG Tool
+  fetch('/data').then(response => response.json()).then(comments => {
     // console.log(comments); DEBUG Tool
-    const commentsElement = document.getElementById('comments-section');
-    commentsElement.innerHTML = '';
-    for(let i=0; i < comments.length; i++){
-      commentsElement.appendChild(createListElement(comments[i]));
-    }
+    commentsExternal = comments;
+    addPageButtons(comments.length);
+    loadPage(1);
   });
 }
 
@@ -115,4 +117,73 @@ function createListElement(text) {
 function deleteComments() {
   let request = new Request('/delete-data', {method:'DELETE'});
   fetch(request).then(unused => {/*console.log('Delete finishes'); DEBUG Tool*/loadComments()});
+}
+
+function addPageButtons(max) {
+  numberOfComments = max;
+  numberOfPages = Math.ceil(numberOfComments / 5);
+  const pageNumbers = document.getElementById('pageNumbers');
+  pageNumbers.innerHTML = '';
+  let buttonText = ['<', '1'];
+  for(let i = 2; i <= numberOfPages; i++){
+    buttonText[i] = i.toString();
+  }
+  buttonText[numberOfPages + 1] = '>';
+  for(let i = 0; i < buttonText.length; i++){
+    pageNumbers.appendChild(createButtonElement(buttonText[i], i));
+  }
+}
+
+function createButtonElement(text, number) {
+  if(text === '<'){
+    return makeBackButton();
+  }
+  if(text === '>'){
+    return makeForwardButton();
+  }
+  const button = document.createElement('input');
+  button.type = 'button';
+  button.addEventListener('click', function(){
+    loadPage(number);
+  });
+  button.value = text;
+  return button;
+}
+
+function makeBackButton() {
+  const button = document.createElement('button');
+  button.onclick = goBack;
+  button.innerText = '<';
+  return button;
+}
+
+function makeForwardButton() {
+  const button = document.createElement('button');
+  button.onclick = goForward;
+  button.innerText = '>';
+  return button;
+}
+
+function goBack() {
+  if(page === 1){
+    return;
+  }
+  loadPage(page - 1);
+}
+
+function goForward() {
+  if(page === numberOfPages){
+    return;
+  }
+  loadPage(page + 1);
+}
+
+function loadPage(pageNumber) {
+  const commentsElement = document.getElementById('comments-section');
+  commentsElement.innerHTML = '';
+  let startingCommentNumber = (pageNumber - 1) * 5;
+  for(let i=startingCommentNumber; i < startingCommentNumber + 5 && i < numberOfComments; i++){
+    commentsElement.appendChild(createListElement(commentsExternal[i]));
+  }
+  page = pageNumber;  
 }

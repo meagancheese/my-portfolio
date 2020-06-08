@@ -100,13 +100,9 @@ public class DataServlet extends HttpServlet {
     //}         //
     
     String jsonMessages = "";
-    int max = getMax(request);
     // for(int i=0; i < 10; i++){ // DEBUG Tool
-    if (max < 0) {
-      max = 5; // Default
-    }
-    List<Entity> results = datastore.prepare(new Query("Comment").addSort("timestamp_millis", SortDirection.ASCENDING))
-      .asList(FetchOptions.Builder.withLimit(max));
+    List<Entity> results = datastore.prepare(new Query("Comment").addSort("timestamp_millis", SortDirection.DESCENDING))
+      .asList(FetchOptions.Builder.withDefaults());
       
     try {
       java.lang.Thread.sleep(1200);
@@ -149,17 +145,5 @@ public class DataServlet extends HttpServlet {
     txn.commit();
     // System.out.println("DEBUG: Sent to datastore " + comment); // DEBUG Tool
     response.sendRedirect("/index.html");
-  }
-  
-  private int getMax(HttpServletRequest request) {
-    String maxString = request.getParameter("max");
-    if(maxString == null){
-      return 5; // Default
-    }
-    try {
-      return Integer.parseInt(maxString);
-    } catch(NumberFormatException e) {
-      return -1;
-    }
   }
 }
