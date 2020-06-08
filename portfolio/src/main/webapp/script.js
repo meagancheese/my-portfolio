@@ -125,11 +125,11 @@ function addPageButtons(max) {
   const pageNumbers = document.getElementById('pageNumbers');
   pageNumbers.innerHTML = '';
   let buttonText = ['<', '1'];
-  for(let i=2; i <= numberOfPages; i++){
+  for(let i = 2; i <= numberOfPages; i++){
     buttonText[i] = i.toString();
   }
   buttonText[numberOfPages + 1] = '>';
-  for(let i=0; i <buttonText.length; i++){
+  for(let i = 0; i < buttonText.length; i++){
     pageNumbers.appendChild(createButtonElement(buttonText[i], i));
   }
 }
