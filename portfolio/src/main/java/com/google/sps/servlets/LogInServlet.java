@@ -24,6 +24,8 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/login")
 public class LogInServlet extends HttpServlet {
   
+  final String ROOT_URL = "/";
+  
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json;");
@@ -32,13 +34,9 @@ public class LogInServlet extends HttpServlet {
     String loggedIn = Boolean.toString(userService.isUserLoggedIn());
     loginInfo.add(loggedIn);
     if (loggedIn.equals("false")) {
-      String urlToRedirectToAfterUserLogsIn = "/";
-      String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
-      loginInfo.add(loginUrl);
+      loginInfo.add(userService.createLoginURL(ROOT_URL));
     } else {
-      String urlToRedirectToAfterUserLogsOut = "/";
-      String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
-      loginInfo.add(logoutUrl);
+      loginInfo.add(userService.createLogoutURL(ROOT_URL));
     }
     response.getWriter().println(new Gson().toJson(loginInfo));
   }  
