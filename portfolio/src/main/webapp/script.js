@@ -247,6 +247,5 @@ function checkLogin() {
       deleteButton.innerText = 'Delete Comments';
       postAndDeleteElement.appendChild(deleteButton);
     }
-    
   });
 }
