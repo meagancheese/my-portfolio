@@ -56,3 +56,11 @@ h3 {
   margin-left: auto;
   margin-right: auto;
 }
+
+#loggedIn {
+  display: none;
+}
+
+#loggedOut {
+  display: none;
+}

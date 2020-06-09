@@ -24,11 +24,29 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/login")
 public class LogInServlet extends HttpServlet {
   
+  final String ROOT_URL = "/";
+  
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json;");
     UserService userService = UserServiceFactory.getUserService();
     boolean loggedIn = userService.isUserLoggedIn();
-    response.getWriter().println(new Gson().toJson(loggedIn));
+    LoginInfo toSend;
+    if (loggedIn) {
+      toSend = new LoginInfo(loggedIn, userService.createLogoutURL(ROOT_URL));
+    } else {
+      toSend = new LoginInfo(loggedIn, userService.createLoginURL(ROOT_URL));
+    }
+    response.getWriter().println(new Gson().toJson(toSend));
   }  
+  
+  private class LoginInfo {
+    private final boolean loggedIn;
+    private final String changeLogInStatusURL;
+    
+    public LoginInfo(boolean loggedIn, String changeLogInStatusURL) {
+      this.loggedIn = loggedIn;
+      this.changeLogInStatusURL = changeLogInStatusURL;
+    }
+  }
 }
