@@ -93,6 +93,11 @@ function changeBordersColor(color){
   document.getElementById('comments').style.border = "5px solid " + color;
 }
 
+function onIndexLoad() {
+  loadComments();
+  checkLogin();
+}
+
 let page = 1;
 let numberOfPages = 0;
 let numberOfComments = 0;
