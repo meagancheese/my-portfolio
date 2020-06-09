@@ -187,3 +187,67 @@ function loadPage(pageNumber) {
   }
   page = pageNumber;  
 }
+
+function checkLogin() {
+  fetch('/login').then(response => response.json()).then(status => {
+    console.log(status);
+    const postAndDeleteElement = document.getElementById('post-and-delete');
+    postAndDeleteElement.innerHTML = '';
+    if(status[0] === 'false'){
+      const loginMessage = document.createElement('p');
+      loginMessage.innerHTML = 'To post or delete comments, please <a href="' + status[1] + '">login</a>.';
+      postAndDeleteElement.appendChild(loginMessage);
+    } else {
+      const submitCommentParagraph = document.createElement('p');
+      submitCommentParagraph.innerText = 'To submit a comment, type in the "New Comment" box \
+        below. If you would like to add your name, type in the "Your Name" box. If no name is \
+        entered, the comment will remain anonymous. When you are finished, click the Submit button.'
+      postAndDeleteElement.appendChild(submitCommentParagraph);
+      
+      const submitCommentForm = document.createElement('form');
+      submitCommentForm.action = '/data';
+      submitCommentForm.method = 'POST';
+      submitCommentForm.innerHTML = '';
+      
+      const commentLabel = document.createElement('label');
+      commentLabel.for = 'comment';
+      commentLabel.id = 'commentLabel';
+      commentLabel.innerText = 'New Comment:';
+      submitCommentForm.appendChild(commentLabel);
+      
+      const commentInput = document.createElement('input');
+      commentInput.type = 'text';
+      commentInput.name = 'comment';
+      submitCommentForm.appendChild(commentInput);
+      submitCommentForm.appendChild(document.createElement('br'));
+      
+      const nameLabel = document.createElement('label');
+      nameLabel.for = 'name';
+      nameLabel.id = 'nameLabel';
+      nameLabel.innerText = 'Your Name:';
+      submitCommentForm.appendChild(nameLabel);
+      
+      const nameInput = document.createElement('input');
+      nameInput.type = 'text';
+      nameInput.name = 'name';
+      submitCommentForm.appendChild(nameInput);
+      
+      const submitInput = document.createElement('input');
+      submitInput.type = 'submit';
+      submitCommentForm.appendChild(submitInput);
+      
+      postAndDeleteElement.appendChild(submitCommentForm);
+      postAndDeleteElement.appendChild(document.createElement('br'));
+      
+      const deleteCommentsParagraph = document.createElement('p');
+      deleteCommentsParagraph.innerText = 'To delete ALL comments, click the button below:';
+      postAndDeleteElement.appendChild(deleteCommentsParagraph);
+      
+      const deleteButton = document.createElement('button');
+      deleteButton.onclick = 'deleteComments()';
+      deleteButton.innerText = 'Delete Comments';
+      postAndDeleteElement.appendChild(deleteButton);
+    }
+    
+  });
+}

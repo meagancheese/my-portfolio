@@ -48,8 +48,12 @@ h3 {
   list-style-type: none;
 }
 
+#commentLabel {
+  padding-right: 4px;
+}
+
 #nameLabel {
-  padding-right: 24px;
+  padding-right: 28px;
 }
 
 #center {
