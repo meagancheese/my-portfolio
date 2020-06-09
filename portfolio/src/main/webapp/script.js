@@ -93,6 +93,11 @@ function changeBordersColor(color){
   document.getElementById('comments').style.border = "5px solid " + color;
 }
 
+function onIndexLoad() {
+  loadComments();
+  checkLogin();
+}
+
 let page = 1;
 let numberOfPages = 0;
 let numberOfComments = 0;
@@ -186,4 +191,16 @@ function loadPage(pageNumber) {
     commentsElement.appendChild(createListElement(commentsExternal[i]));
   }
   page = pageNumber;  
+}
+
+function checkLogin() {
+  fetch('/login').then(response => response.json()).then(status => {
+    if(status.loggedIn){
+      document.getElementById('loggedIn').style.display = 'inline';
+      document.getElementById('logout-message').innerHTML = 'If you would like to logout, click <a href="' + status.changeLogInStatusURL + '">here</a>.';
+    } else {
+      document.getElementById('loggedOut').style.display = 'inline';
+      document.getElementById('login-message').innerHTML = 'To post or delete comments, please <a href="' + status.changeLogInStatusURL + '">login</a>.';
+    }
+  });
 }

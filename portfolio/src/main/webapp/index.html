@@ -10,7 +10,7 @@
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAcapRpehks3Ij0zdH87uvItbNzGQptKvI&callback=initMap">
   </script>    
 </head>
-<body onload="loadComments()">
+<body onload="onIndexLoad()">
   <div id="content">
     <h1>Meagan Konst's Portfolio</h1>
     <img src="/images/Selfie.jpg" alt="Meagan Selfie" width="300" height="400" class="center"/>
@@ -108,21 +108,34 @@
         </div>
       </div>
       <br>
-      <p>To submit a comment, type in the "New Comment" box below. If you would like to add your
-        name, type in the "Your Name" box. If no name is entered, the comment will remain 
-        anonymous. When you are finished, click the Submit button.
-      </p>
-      <form action="/data" method="POST">
-        <label for="comment">New Comment:</label>
-        <input type="text" name="comment"/>
+      <div id="loggedIn">
+        <div id="post-and-delete">
+          <p>To submit a comment, type in the "New Comment" box below. If you would like to add your
+            name, type in the "Your Name" box. If no name is entered, the comment will remain 
+            anonymous. When you are finished, click the Submit button.
+          </p>
+          <form action="/data" method="POST">
+            <label for="comment">New Comment:</label>
+            <input type="text" name="comment"/>
+            <br>
+            <label for="name" id="nameLabel">Your Name:</label>
+            <input type="text" name="name"/>
+            <input type="submit"/>
+          </form>
+          <br>
+          <p>To delete ALL comments, click the button below:</p>
+          <button onclick="deleteComments()">Delete Comments</button>
+        </div>
         <br>
-        <label for="name" id="nameLabel">Your Name:</label>
-        <input type="text" name="name"/>
-        <input type="submit"/>
-      </form>
-      <br>
-      <p>To delete ALL comments, click the button below:</p>
-      <button onclick="deleteComments()">Delete Comments</button>
+        <div id="logout">
+          <p id="logout-message"></p>
+        </div>
+        <br>
+      </div>
+      <div id="loggedOut">
+        <p id="login-message"></p>
+        <br>
+      </div>
     </div>
   </div>
 </body>
