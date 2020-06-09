@@ -190,7 +190,6 @@ function loadPage(pageNumber) {
 
 function checkLogin() {
   fetch('/login').then(response => response.json()).then(status => {
-    console.log(status);
     const postAndDeleteElement = document.getElementById('post-and-delete');
     postAndDeleteElement.innerHTML = '';
     if(status[0] === 'false'){
