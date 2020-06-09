@@ -105,26 +105,34 @@
         </div>
       </div>
       <br>
-      <div id="post-and-delete">
-        <p>To submit a comment, type in the "New Comment" box below. If you would like to add your
-          name, type in the "Your Name" box. If no name is entered, the comment will remain 
-          anonymous. When you are finished, click the Submit button.
-        </p>
-        <form action="/data" method="POST">
-          <label for="comment">New Comment:</label>
-          <input type="text" name="comment"/>
+      <div id="loggedIn">
+        <div id="post-and-delete">
+          <p>To submit a comment, type in the "New Comment" box below. If you would like to add your
+            name, type in the "Your Name" box. If no name is entered, the comment will remain 
+            anonymous. When you are finished, click the Submit button.
+          </p>
+          <form action="/data" method="POST">
+            <label for="comment">New Comment:</label>
+            <input type="text" name="comment"/>
+            <br>
+            <label for="name" id="nameLabel">Your Name:</label>
+            <input type="text" name="name"/>
+            <input type="submit"/>
+          </form>
           <br>
-          <label for="name" id="nameLabel">Your Name:</label>
-          <input type="text" name="name"/>
-          <input type="submit"/>
-        </form>
+          <p>To delete ALL comments, click the button below:</p>
+          <button onclick="deleteComments()">Delete Comments</button>
+        </div>
         <br>
-        <p>To delete ALL comments, click the button below:</p>
-        <button onclick="deleteComments()">Delete Comments</button>
+        <div id="logout">
+          <p id="logout-message"></p>
+        </div>
+        <br>
       </div>
-      <div id="logout">
+      <div id="loggedOut">
+        <p id="login-message"></p>
+        <br>
       </div>
-      <br>
     </div>
   </div>
 </body>
