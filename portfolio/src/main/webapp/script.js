@@ -191,17 +191,17 @@ function loadPage(pageNumber) {
 function checkLogin() {
   fetch('/login').then(response => response.json()).then(status => {
     const postAndDeleteElement = document.getElementById('post-and-delete');
-    if(status[0] === 'false'){
+    if(!status.loggedIn){
       postAndDeleteElement.innerHTML = '';
       const loginMessage = document.createElement('p');
-      loginMessage.innerHTML = 'To post or delete comments, please <a href="' + status[1] + '">login</a>.';
+      loginMessage.innerHTML = 'To post or delete comments, please <a href="' + status.changeLogInStatusURL + '">login</a>.';
       postAndDeleteElement.appendChild(loginMessage);
     } else {
       const logoutElement = document.getElementById('logout');
       logoutElement.innerHTML = '';
       logoutElement.appendChild(document.createElement('br'));
       const logoutMessage = document.createElement('p');
-      logoutMessage.innerHTML = 'If you would like to logout, click <a href="' + status[1] + '">here</a>.';
+      logoutMessage.innerHTML = 'If you would like to logout, click <a href="' + status.changeLogInStatusURL + '">here</a>.';
       logoutElement.appendChild(logoutMessage);
     }
   });
