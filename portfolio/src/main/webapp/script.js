@@ -91,11 +91,13 @@ function changeBordersColor(color){
     document.images.item(i).style.border = "10px solid " + color;
   }
   document.getElementById('comments').style.border = "5px solid " + color;
+  document.getElementById('map').style.border = "5px solid " + color;
 }
 
 function onIndexLoad() {
   loadComments();
   checkLogin();
+  initMap();
 }
 
 let page = 1;
@@ -203,4 +205,9 @@ function checkLogin() {
       document.getElementById('login-message').innerHTML = 'To post or delete comments, please <a href="' + status.changeLogInStatusURL + '">login</a>.';
     }
   });
+}
+
+function initMap() {
+  const map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: 42.633, lng: -83.120}, zoom: 8});
 }
