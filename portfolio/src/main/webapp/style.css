@@ -64,3 +64,11 @@ h3 {
 #loggedOut {
   display: none;
 }
+
+#map {
+  border: 5px darkorchid solid;
+  height: 650px;
+  width: 650px;
+  margin-left: auto;
+  margin-right: auto;
+}
