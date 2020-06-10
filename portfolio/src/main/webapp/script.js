@@ -87,8 +87,9 @@ function changePageColor() {
 }
 
 function changeBordersColor(color){
-  for(var i = 0; i < document.images.length; i++){
-    document.images.item(i).style.border = "10px solid " + color;
+  const images = document.getElementsByClassName('images');
+  for(let i = 0; i < images.length; i++){
+    images[i].style.border = "10px solid " + color;
   }
   document.getElementById('comments').style.border = "5px solid " + color;
   document.getElementById('map').style.border = "5px solid " + color;
@@ -210,4 +211,8 @@ function checkLogin() {
 function initMap() {
   const map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 42.633, lng: -83.120}, zoom: 8});
+  const brooklandsMarker = new google.maps.Marker({position: {lat: 42.635067, lng: -83.121789}, map: map});
+  const roeperLowerSchoolMarker = new google.maps.Marker({position: {lat: 42.593628, lng: -83.252818}, map: map});
+  const roeperUpperSchoolMarker = new google.maps.Marker({position: {lat: 42.550339, lng: -83.206519}, map: map});
+  const washUMarker = new google.maps.Marker({position: {lat: 38.648898, lng: -90.310903}, map: map});
 }
