@@ -210,7 +210,8 @@ function checkLogin() {
 
 function initMap() {
   const map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 42.633, lng: -83.120}, zoom: 8});
+    center: {lat: 42.633, lng: -83.120}, zoom: 8
+  });
   const brooklandsMarker = new google.maps.Marker({position: {lat: 42.635067, lng: -83.121789}, map: map, title: 'Brooklands Elementary School'});
   const roeperLowerSchoolMarker = new google.maps.Marker({position: {lat: 42.593628, lng: -83.252818}, map: map, title: 'Roeper Lower School'});
   const roeperUpperSchoolMarker = new google.maps.Marker({position: {lat: 42.550339, lng: -83.206519}, map: map, title: 'Roeper Upper School'});
