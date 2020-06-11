@@ -159,16 +159,22 @@ function createButtonElement(text, number) {
 }
 
 function makeBackButton() {
-  const button = document.createElement('button');
-  button.onclick = goBack;
-  button.innerText = '<';
+  const button = document.createElement('input');
+  button.type = 'button';
+  button.addEventListener('click', function() {
+    goBack();
+  });
+  button.value = '<';
   return button;
 }
 
 function makeForwardButton() {
-  const button = document.createElement('button');
-  button.onclick = goForward;
-  button.innerText = '>';
+  const button = document.createElement('input');
+  button.type = 'button';
+  button.addEventListener('click', function() {
+    goForward();
+  });
+  button.value = '>';
   return button;
 }
 
