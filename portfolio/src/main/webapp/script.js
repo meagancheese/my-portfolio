@@ -268,9 +268,9 @@ function drawChart() {
   ]);
 
   const options = {
-    'title': 'Band Practice Breakdown',
-    'width':650,
-    'height':650
+    'width': 650,
+    'height': 650,
+    'legend': 'none'
   };
 
   const chart = new google.visualization.PieChart(
