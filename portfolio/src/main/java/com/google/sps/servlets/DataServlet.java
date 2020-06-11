@@ -44,72 +44,9 @@ public class DataServlet extends HttpServlet {
   
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    // System.out.println("Calls doGet"); DEBUG Tool
-    /*
-    // Testing 1 2 3 
-    for(int i = 0; i < 10; i++){
-      Entity testEnt = new Entity("Test");
-      testEnt.setProperty("runNumber", i);
-      Transaction txn = datastore.beginTransaction();
-      datastore.put(txn, testEnt);
-      txn.commit();
-      System.out.println("TEST: This P U T run: " + testEnt.getProperty("runNumber"));
-      for(Entity entity : datastore.prepare(new Query("Test")).asIterable()){
-        System.out.println("TEST: This GOT run: " + entity.getProperty("runNumber"));
-      }
-    }
-   List<Entity> testList = new ArrayList<>();
-   for(Entity test : datastore.prepare(new Query("Test")).asIterable()){
-     testList.add(test);
-   }
-   
-    for(Entity test : testList){
-      Transaction txn = datastore.beginTransaction();
-      datastore.delete(txn, test.getKey());
-      txn.commit();
-      System.out.println(test.getProperty("runNumber"));
-    }
-    
-  /*  try {
-          java.lang.Thread.sleep(200);
-         } catch (Exception e) {
-            System.out.println(e);
-         }
-         
-    System.out.println("After delete, datastore sees these: ");
-    for(Entity entity : datastore.prepare(new Query("Test")).asIterable()){
-      System.out.println(entity.getProperty("runNumber"));
-    }
-    try {
-          java.lang.Thread.sleep(1000);
-         } catch (Exception e) {
-            System.out.println(e);
-         }
-         
-    System.out.println("After delete, datastore sees these: ");
-    for(Entity entity : datastore.prepare(new Query("Test")).asIterable()){
-      System.out.println(entity.getProperty("runNumber"));
-    }
-    */
-    //End Testing
-    
-    
-    // Temporarily comments out the base of my code to just test doGet placing and retrieving info from datastore
-    //if(true){ //Comments out code
-    //  return; //
-    //}         //
-    
     String jsonMessages = "";
-    // for(int i=0; i < 10; i++){ // DEBUG Tool
     List<Entity> results = datastore.prepare(new Query("Comment").addSort("timestamp_millis", SortDirection.DESCENDING))
       .asList(FetchOptions.Builder.withDefaults());
-      
-    try {
-      java.lang.Thread.sleep(1200);
-    } catch (Exception e) {
-      System.out.println(e);
-      }
-      
     List<String> messages = new ArrayList<String>();
     for(Entity entity : results){
       String text = (String)entity.getProperty("text");
@@ -117,12 +54,8 @@ public class DataServlet extends HttpServlet {
       String comment = String.format("\"%s\" - %s", text, name);
       messages.add(comment);
     }
-    final Gson gson = new Gson();
-    jsonMessages = gson.toJson(messages);
-     // System.out.println("DEBUG: " + i + " " + jsonMessages); // DEBUG Tool
-    // } // DEBUG Tool
     response.setContentType("application/json;");
-    response.getWriter().println(jsonMessages);
+    response.getWriter().println(new Gson().toJson(messages));
     
     
   }
@@ -143,7 +76,6 @@ public class DataServlet extends HttpServlet {
     Transaction txn = datastore.beginTransaction();
     datastore.put(txn, commentEntity);
     txn.commit();
-    // System.out.println("DEBUG: Sent to datastore " + comment); // DEBUG Tool
     response.sendRedirect("/index.html");
   }
 }

@@ -107,9 +107,7 @@ let numberOfComments = 0;
 let commentsExternal = [];
 
 function loadComments() {
-  // console.log('loadComments starts'); DEBUG Tool
   fetch('/data').then(response => response.json()).then(comments => {
-    // console.log(comments); DEBUG Tool
     commentsExternal = comments;
     addPageButtons(comments.length);
     loadPage(1);
@@ -124,7 +122,7 @@ function createListElement(text) {
 
 function deleteComments() {
   let request = new Request('/delete-data', {method:'DELETE'});
-  fetch(request).then(unused => {/*console.log('Delete finishes'); DEBUG Tool*/loadComments()});
+  fetch(request).then(unused => {loadComments()});
 }
 
 function addPageButtons(max) {
