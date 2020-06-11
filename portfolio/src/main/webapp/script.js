@@ -214,12 +214,35 @@ function checkLogin() {
   });
 }
 
+let markers = [];
+let infoWindows = [];
+
 function initMap() {
   const map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 42.633, lng: -83.120}, zoom: 8
+    center: {lat: 42.442931, lng: -86.245930}, zoom: 6
   });
-  const brooklandsMarker = new google.maps.Marker({position: {lat: 42.635067, lng: -83.121789}, map: map, title: 'Brooklands Elementary School'});
-  const roeperLowerSchoolMarker = new google.maps.Marker({position: {lat: 42.593628, lng: -83.252818}, map: map, title: 'Roeper Lower School'});
-  const roeperUpperSchoolMarker = new google.maps.Marker({position: {lat: 42.550339, lng: -83.206519}, map: map, title: 'Roeper Upper School'});
-  const washUMarker = new google.maps.Marker({position: {lat: 38.648898, lng: -90.310903}, map: map, title: 'Washington University in St. Louis'});
+  addSchool({lat: 42.635067, lng: -83.121789}, map, 'Brooklands Elementary School: K-4');
+  addSchool({lat: 42.593628, lng: -83.252818}, map, 'Roeper Lower School: 5');
+  addSchool({lat: 42.550339, lng: -83.206519}, map, 'Roeper Upper School: 6-12');
+  addSchool({lat: 38.648898, lng: -90.310903}, map, 'Washington University in St. Louis: Undergrad');
+}
+
+function addSchool(latLng, map, infoWindowText) {
+  const marker = new google.maps.Marker({
+    position: latLng,
+    map: map
+  });
+  markers.push(marker);
+  const infoWindow = new google.maps.InfoWindow({content: infoWindowText});
+  marker.addListener('click', () => {
+    closeWindows(map);
+    infoWindow.open(map, marker);
+  });
+  infoWindows.push(infoWindow);
+}
+
+function closeWindows(map) {
+  for(let i=0; i < markers.length; i++){
+    infoWindows[i].close(map, markers[i]);
+  }
 }
