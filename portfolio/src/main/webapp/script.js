@@ -217,3 +217,36 @@ function initMap() {
   const roeperUpperSchoolMarker = new google.maps.Marker({position: {lat: 42.550339, lng: -83.206519}, map: map, title: 'Roeper Upper School'});
   const washUMarker = new google.maps.Marker({position: {lat: 38.648898, lng: -90.310903}, map: map, title: 'Washington University in St. Louis'});
 }
+
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+/** Creates a chart and adds it to the page. */
+function drawChart() {
+  const data = new google.visualization.DataTable();
+  data.addColumn('string', 'Task');
+  data.addColumn('number', 'Minutes');
+  data.addRows([
+    ['Deciding when to practice', 10],
+    ['Waiting to get picked up', 25],
+    ['Driving to/from where we\'re practicing', 20],
+    ['Waiting for everyone to show up', 30],
+    ['Socializing', 30],
+    ['Setting up gear', 15],
+    ['Playing songs that we aren\'t playing at our next gig', 20],
+    ['Deciding our set list', 30],
+    ['Rehearsing', 120],
+    ['Creating harmonies', 15],
+    ['Messing up an entrance or skipping a section', 25]
+  ]);
+
+  const options = {
+    'title': 'Band Practice Breakdown',
+    'width':650,
+    'height':650
+  };
+
+  const chart = new google.visualization.PieChart(
+      document.getElementById('chart-container'));
+  chart.draw(data, options);
+}

@@ -67,3 +67,7 @@ h3 {
   margin-left: auto;
   margin-right: auto;
 }
+
+#chart-container {
+  text-align: center;
+}
