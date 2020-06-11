@@ -54,10 +54,8 @@ public class DataServlet extends HttpServlet {
       String comment = String.format("\"%s\" - %s", text, name);
       messages.add(comment);
     }
-    final Gson gson = new Gson();
-    jsonMessages = gson.toJson(messages);
     response.setContentType("application/json;");
-    response.getWriter().println(jsonMessages);
+    response.getWriter().println(new Gson().toJson(messages));
     
     
   }
