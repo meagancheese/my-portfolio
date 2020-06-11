@@ -67,3 +67,23 @@ h3 {
   margin-left: auto;
   margin-right: auto;
 }
+
+#pageNumbers {
+  text-align: center;
+}
+
+#pageNumbers > input:first-child {
+  margin: 0 4px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+#pageNumbers > input:last-child {
+  margin: 0 4px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+#pageNumbers > input {
+  margin: 0 4px;
+}
