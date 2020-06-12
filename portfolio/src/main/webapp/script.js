@@ -250,10 +250,10 @@ google.charts.setOnLoadCallback(drawChart);
 
 /** Creates a chart and adds it to the page. */
 function drawChart() {
-  const data = new google.visualization.DataTable();
-  data.addColumn('string', 'Task');
-  data.addColumn('number', 'Minutes');
-  data.addRows([
+  const table = new google.visualization.DataTable();
+  table.addColumn('string', 'Task');
+  table.addColumn('number', 'Minutes');
+  table.addRows([
     ['Deciding when to practice', 10],
     ['Waiting to get picked up', 25],
     ['Driving to/from where we\'re practicing', 20],
@@ -276,5 +276,5 @@ function drawChart() {
   const chart = new google.visualization.PieChart(
     document.getElementById('chart-container')
   );
-  chart.draw(data, options);
+  chart.draw(table, options);
 }
