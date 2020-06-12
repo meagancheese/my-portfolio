@@ -57,7 +57,6 @@ function addRandomFavorite() {
 
 function changePageColor() {
   let color = document.getElementById('colorChange').value;
-  console.log(color);
   switch(color){
     case 'blue':
       document.body.style.backgroundColor = "lightblue";
@@ -88,11 +87,13 @@ function changePageColor() {
 
 function changeBordersColor(color){
   const images = document.getElementsByClassName('images');
-  for(let i = 0; i < images.length; i++){
+  for (let i = 0; i < images.length; i++) {
     images[i].style.border = "10px solid " + color;
   }
-  document.getElementById('comments').style.border = "5px solid " + color;
-  document.getElementById('map').style.border = "5px solid " + color;
+  const thinObjects = document.getElementsByClassName('thin-border');
+  for (let i = 0; i < thinObjects.length; i++) {
+    thinObjects[i].style.border = "5px solid " + color;
+  }
 }
 
 function onIndexLoad() {
@@ -280,8 +281,8 @@ function drawChart() {
   ]);
 
   const options = {
-    'width': 650,
-    'height': 650,
+    'width': 640,
+    'height': 640,
     'legend': 'none'
   };
 
