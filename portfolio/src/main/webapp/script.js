@@ -245,7 +245,7 @@ class MapClass {
   }
   
   closeWindows() {
-    for (let i=0; i < this.markers.length; i++) {
+    for (let i = 0; i < this.markers.length; i++) {
       this.infoWindows[i].close(this.map, this.markers[i]);
     }
   }
