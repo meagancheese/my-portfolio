@@ -222,7 +222,7 @@ function initMap() {
   [{lat: 42.635067, lng: -83.121789}, 'Brooklands Elementary School: K-4'],
   [{lat: 42.593628, lng: -83.252818}, 'Roeper Lower School: 5'],
   [{lat: 42.550339, lng: -83.206519}, 'Roeper Upper School: 6-12'],
-  [{at: 38.648898, lng: -90.310903}, 'Washington University in St. Louis: Undergrad'],
+  [{lat: 38.648898, lng: -90.310903}, 'Washington University in St. Louis: Undergrad'],
   ]);
 }
 
