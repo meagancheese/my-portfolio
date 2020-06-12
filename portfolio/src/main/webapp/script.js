@@ -244,3 +244,37 @@ function closeWindows(map) {
     infoWindows[i].close(map, markers[i]);
   }
 }
+
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+
+/** Creates a chart and adds it to the page. */
+function drawChart() {
+  const table = new google.visualization.DataTable();
+  table.addColumn('string', 'Task');
+  table.addColumn('number', 'Minutes');
+  table.addRows([
+    ['Deciding when to practice', 10],
+    ['Waiting to get picked up', 25],
+    ['Driving to/from where we\'re practicing', 20],
+    ['Waiting for everyone to show up', 30],
+    ['Socializing', 30],
+    ['Setting up gear', 10],
+    ['Playing songs that we aren\'t playing at our next gig', 15],
+    ['Deciding our set list', 10],
+    ['Rehearsing', 90],
+    ['Creating harmonies', 10],
+    ['Messing up an entrance or skipping a section', 15]
+  ]);
+
+  const options = {
+    'width': 650,
+    'height': 650,
+    'legend': 'none'
+  };
+
+  const chart = new google.visualization.PieChart(
+    document.getElementById('chart-container')
+  );
+  chart.draw(table, options);
+}

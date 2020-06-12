@@ -68,6 +68,10 @@ h3 {
   margin-right: auto;
 }
 
+#chart-container {
+  text-align: center;
+}
+
 #pageNumbers {
   text-align: center;
 }
