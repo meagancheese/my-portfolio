@@ -244,8 +244,8 @@ class MapWidget {
     this.markers.push(marker);
     let infoWindow = new google.maps.InfoWindow({content: windowText});
     marker.addListener('click', () => {
-     this.closeWindows();
-     infoWindow.open(this.map, marker); 
+      this.closeWindows();
+      infoWindow.open(this.map, marker); 
     });
     this.infoWindows.push(infoWindow);
   }
