@@ -212,36 +212,42 @@ function checkLogin() {
   });
 }
 
-let markers = [];
-let infoWindows = [];
-
 function initMap() {
-  const map = new google.maps.Map(document.getElementById('map'), {
+  let map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 42.442931, lng: -86.245930}, zoom: 6
   });
-  addSchool({lat: 42.635067, lng: -83.121789}, map, 'Brooklands Elementary School: K-4');
-  addSchool({lat: 42.593628, lng: -83.252818}, map, 'Roeper Lower School: 5');
-  addSchool({lat: 42.550339, lng: -83.206519}, map, 'Roeper Upper School: 6-12');
-  addSchool({lat: 38.648898, lng: -90.310903}, map, 'Washington University in St. Louis: Undergrad');
+  let mapWidget = new MapClass(map);
+  mapWidget.makeMarker({lat: 42.635067, lng: -83.121789}, 'Brooklands Elementary School: K-4');
+  mapWidget.makeMarker({lat: 42.593628, lng: -83.252818}, 'Roeper Lower School: 5');
+  mapWidget.makeMarker({lat: 42.550339, lng: -83.206519}, 'Roeper Upper School: 6-12');
+  mapWidget.makeMarker({lat: 38.648898, lng: -90.310903}, 'Washington University in St. Louis: Undergrad');
 }
 
-function addSchool(latLng, map, infoWindowText) {
-  const marker = new google.maps.Marker({
-    position: latLng,
-    map: map
-  });
-  markers.push(marker);
-  const infoWindow = new google.maps.InfoWindow({content: infoWindowText});
-  marker.addListener('click', () => {
-    closeWindows(map);
-    infoWindow.open(map, marker);
-  });
-  infoWindows.push(infoWindow);
-}
-
-function closeWindows(map) {
-  for(let i=0; i < markers.length; i++){
-    infoWindows[i].close(map, markers[i]);
+class MapClass {
+  constructor(map) {
+    this.map = map;
+    this.markers = [];
+    this.infoWindows = [];
+  }
+  
+  makeMarker(latLng, windowText) {
+    let marker = new google.maps.Marker({
+      position: latLng,
+      map: this.map
+    });
+    this.markers.push(marker);
+    let infoWindow = new google.maps.InfoWindow({content: windowText});
+    marker.addListener('click', () => {
+     this.closeWindows();
+     infoWindow.open(this.map, marker); 
+    });
+    this.infoWindows.push(infoWindow);
+  }
+  
+  closeWindows() {
+    for (let i=0; i < this.markers.length; i++) {
+      this.infoWindows[i].close(this.map, this.markers[i]);
+    }
   }
 }
 
