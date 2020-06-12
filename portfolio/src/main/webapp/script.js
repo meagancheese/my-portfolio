@@ -217,10 +217,10 @@ function initMap() {
     center: {lat: 42.442931, lng: -86.245930}, zoom: 6
   });
   let mapWidget = new MapWidget(map);
-  mapWidget.makeMarker({lat: 42.635067, lng: -83.121789}, 'Brooklands Elementary School: K-4');
-  mapWidget.makeMarker({lat: 42.593628, lng: -83.252818}, 'Roeper Lower School: 5');
-  mapWidget.makeMarker({lat: 42.550339, lng: -83.206519}, 'Roeper Upper School: 6-12');
-  mapWidget.makeMarker({lat: 38.648898, lng: -90.310903}, 'Washington University in St. Louis: Undergrad');
+  mapWidget.addMarker({lat: 42.635067, lng: -83.121789}, 'Brooklands Elementary School: K-4');
+  mapWidget.addMarker({lat: 42.593628, lng: -83.252818}, 'Roeper Lower School: 5');
+  mapWidget.addMarker({lat: 42.550339, lng: -83.206519}, 'Roeper Upper School: 6-12');
+  mapWidget.addMarker({lat: 38.648898, lng: -90.310903}, 'Washington University in St. Louis: Undergrad');
 }
 
 class MapWidget {
@@ -230,7 +230,7 @@ class MapWidget {
     this.infoWindows = [];
   }
   
-  makeMarker(latLng, windowText) {
+  addMarker(latLng, windowText) {
     let marker = new google.maps.Marker({
       position: latLng,
       map: this.map
