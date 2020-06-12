@@ -93,6 +93,7 @@ function changeBordersColor(color){
   }
   document.getElementById('comments').style.border = "5px solid " + color;
   document.getElementById('map').style.border = "5px solid " + color;
+  document.getElementById('chart-container').style.border = "5px solid " + color;
 }
 
 function onIndexLoad() {
@@ -268,8 +269,8 @@ function drawChart() {
   ]);
 
   const options = {
-    'width': 650,
-    'height': 650,
+    'width': 640,
+    'height': 640,
     'legend': 'none'
   };
 

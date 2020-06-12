@@ -70,6 +70,7 @@ h3 {
 
 #chart-container {
   text-align: center;
+  border: 5px darkorchid solid;
 }
 
 #pageNumbers {
