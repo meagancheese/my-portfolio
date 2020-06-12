@@ -216,14 +216,14 @@ function initMap() {
   let map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 42.442931, lng: -86.245930}, zoom: 6
   });
-  let mapWidget = new MapClass(map);
+  let mapWidget = new MapWidget(map);
   mapWidget.makeMarker({lat: 42.635067, lng: -83.121789}, 'Brooklands Elementary School: K-4');
   mapWidget.makeMarker({lat: 42.593628, lng: -83.252818}, 'Roeper Lower School: 5');
   mapWidget.makeMarker({lat: 42.550339, lng: -83.206519}, 'Roeper Upper School: 6-12');
   mapWidget.makeMarker({lat: 38.648898, lng: -90.310903}, 'Washington University in St. Louis: Undergrad');
 }
 
-class MapClass {
+class MapWidget {
   constructor(map) {
     this.map = map;
     this.markers = [];
