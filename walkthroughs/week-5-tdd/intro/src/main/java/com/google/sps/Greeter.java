@@ -26,21 +26,6 @@ public class Greeter {
   }
   
   private String removeSymbols(String name) {
-    String newString = name;
-    for (int i = 0; i < name.length(); i++) {
-      char character = name.charAt(i);
-      String charSequence = "" + character + "";
-      int ascii = (int) character;
-      //Allowing for A-Z, a-z, ', and -.
-      if (!((ascii > 64 && ascii < 91) || (ascii > 96 && ascii < 123) || ascii == 39 || ascii == 45)) {
-        System.out.println("Made it into if statement with: " + charSequence);
-        newString = replaceCharacter(newString, charSequence);
-      }
-    }
-    return newString;
-  }
-  
-  private String replaceCharacter(String toChange, CharSequence character) {
-    return toChange.replace(character, "");
-  }
+    return name.replaceAll("[^a-zA-Z ]", "");
+  }  
 }
