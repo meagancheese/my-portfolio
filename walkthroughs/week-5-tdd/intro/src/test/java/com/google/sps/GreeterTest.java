@@ -24,10 +24,21 @@ public final class GreeterTest {
 
   @Test
   public void testGreeting() {
-    Greeter greeter = new Greeter();
-
-    String greeting = greeter.greet("Ada");
-
-    Assert.assertEquals("Hello Ada", greeting);
+    Assert.assertEquals("Hello Ada", new Greeter().greet("Ada"));
+  }
+  
+  @Test
+  public void testGreetingTrimsWhitespace() {
+    Assert.assertEquals("Hello Ada", new Greeter().greet("   Ada   "));
+  }
+  
+  @Test
+  public void testGreetingDoesNotRemoveInnerWhitespace() {
+    Assert.assertEquals("Hello Ada Lovelace", new Greeter().greet("Ada Lovelace"));
+  }
+  
+  @Test
+  public void testGreetingRemovesSymbols() {
+    Assert.assertEquals("Hello Keha", new Greeter().greet("Ke$ha!"));
   }
 }
