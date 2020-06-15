@@ -22,6 +22,25 @@ public class Greeter {
    * Returns a greeting for the given name.
    */
   public String greet(String name) {
-    return "Hello " + name;
+    return "Hello " + removeSymbols(name.trim());
+  }
+  
+  private String removeSymbols(String name) {
+    String newString = name;
+    for (int i = 0; i < name.length(); i++) {
+      char character = name.charAt(i);
+      String charSequence = "" + character + "";
+      int ascii = (int) character;
+      //Allowing for A-Z, a-z, ', and -.
+      if (!((ascii > 64 && ascii < 91) || (ascii > 96 && ascii < 123) || ascii == 39 || ascii == 45)) {
+        System.out.println("Made it into if statement with: " + charSequence);
+        newString = replaceCharacter(newString, charSequence);
+      }
+    }
+    return newString;
+  }
+  
+  private String replaceCharacter(String toChange, CharSequence character) {
+    return toChange.replace(character, "");
   }
 }
