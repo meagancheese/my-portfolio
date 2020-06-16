@@ -71,6 +71,7 @@ public final class FindMeetingQuery {
       }
       if (!currentEventTime.overlaps(nextEventTime)) {
         addTimeOption(currentEventTime.end(), nextEventTime.start());
+        continue;
       }
       if (currentEventTime.contains(nextEventTime)) {
         if (i + 1 < eventsList.size()) {
