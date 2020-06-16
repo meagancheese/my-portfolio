@@ -94,12 +94,7 @@ public final class FindMeetingQuery {
   }
   
   private void addTimeRange(int start, int end) {
-    boolean inclusive;
-    if (end == TimeRange.END_OF_DAY) {
-      inclusive = true;
-    } else {
-      inclusive = false;
-    }
+    boolean inclusive = end == TimeRange.END_OF_DAY;
     timeOptions.add(TimeRange.fromStartEnd(start, end, inclusive));
   }
   
