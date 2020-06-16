@@ -24,7 +24,7 @@ import java.util.Set;
 
 public final class FindMeetingQuery {
   
-  Collection<TimeRange> timeOptions = new ArrayList<TimeRange>();
+  private Collection<TimeRange> timeOptions = new ArrayList<TimeRange>();
   
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
     if (request.getDuration() > TimeRange.WHOLE_DAY.duration()) {
