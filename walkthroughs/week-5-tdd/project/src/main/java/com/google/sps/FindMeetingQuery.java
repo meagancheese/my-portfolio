@@ -55,7 +55,7 @@ public final class FindMeetingQuery {
     TimeRange lastEventTime = eventsList.get(eventsList.size() - 1).getWhen();
     boolean earlyEnd = false;
     if (TimeRange.START_OF_DAY != firstEventTime.start()) {
-      addTimeRange(TimeRange.START_OF_DAY, firstEventTime.start());
+      addTimeOption(TimeRange.START_OF_DAY, firstEventTime.start());
     }
     for (int i = 1; i < eventsList.size(); i++) {
       TimeRange currentEventTime = eventsList.get(i - 1).getWhen();
@@ -66,22 +66,22 @@ public final class FindMeetingQuery {
       }
       if (!backToBack(currentEventTime, nextEventTime)) {
         if (!currentEventTime.overlaps(nextEventTime)) {
-          addTimeRange(currentEventTime.end(), nextEventTime.start());
+          addTimeOption(currentEventTime.end(), nextEventTime.start());
         }
         if (currentEventTime.contains(nextEventTime)) {
           if (i + 1 < eventsList.size()) {
-            addTimeRange(currentEventTime.end(), skipNextTime.start());
+            addTimeOption(currentEventTime.end(), skipNextTime.start());
           } else {
             earlyEnd = true;
             if (lastEventTime.end() - 1 != TimeRange.END_OF_DAY) {
-              addTimeRange(currentEventTime.end(), TimeRange.END_OF_DAY);
+              addTimeOption(currentEventTime.end(), TimeRange.END_OF_DAY);
             }
           }
         } 
       } 
     }
     if ((lastEventTime.end() - 1 != TimeRange.END_OF_DAY) && !earlyEnd) {
-      addTimeRange(lastEventTime.end(), TimeRange.END_OF_DAY);
+      addTimeOption(lastEventTime.end(), TimeRange.END_OF_DAY);
     }
     
     for (TimeRange meetingOption : timeOptions) {
@@ -93,7 +93,7 @@ public final class FindMeetingQuery {
     return Arrays.asList();
   }
   
-  private void addTimeRange(int start, int end) {
+  private void addTimeOption(int start, int end) {
     boolean inclusive = end == TimeRange.END_OF_DAY;
     timeOptions.add(TimeRange.fromStartEnd(start, end, inclusive));
   }
