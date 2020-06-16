@@ -60,7 +60,7 @@ public final class FindMeetingQuery {
     for (int i = 1; i < eventsList.size(); i++) {
       TimeRange currentEventTime = eventsList.get(i - 1).getWhen();
       TimeRange nextEventTime = eventsList.get(i).getWhen();
-      TimeRange skipNextTime = TimeRange.fromStartDuration(1,2); 
+      TimeRange skipNextTime = null; 
       if (i + 1 < eventsList.size()) {
         skipNextTime = eventsList.get(i + 1).getWhen();
       }
