@@ -64,21 +64,25 @@ public final class FindMeetingQuery {
       if (i + 1 < eventsList.size()) {
         skipNextTime = eventsList.get(i + 1).getWhen();
       }
-      if (!backToBack(currentEventTime, nextEventTime)) {
-        if (!currentEventTime.overlaps(nextEventTime)) {
-          addTimeOption(currentEventTime.end(), nextEventTime.start());
-        }
-        if (currentEventTime.contains(nextEventTime)) {
-          if (i + 1 < eventsList.size()) {
-            addTimeOption(currentEventTime.end(), skipNextTime.start());
-          } else {
-            earlyEnd = true;
-            if (lastEventTime.end() - 1 != TimeRange.END_OF_DAY) {
-              addTimeOption(currentEventTime.end(), TimeRange.END_OF_DAY);
-            }
+      if (backToBack(currentEventTime, nextEventTime)) {
+        // When two events are back-to-back, they can be considered as one long event
+        // and so we will add a meeting time option only after the next event.
+        continue;
+      }
+      if (!currentEventTime.overlaps(nextEventTime)) {
+        addTimeOption(currentEventTime.end(), nextEventTime.start());
+      }
+      if (currentEventTime.contains(nextEventTime)) {
+        if (i + 1 < eventsList.size()) {
+          addTimeOption(currentEventTime.end(), skipNextTime.start());
+        } else {
+          earlyEnd = true;
+          if (lastEventTime.end() - 1 != TimeRange.END_OF_DAY) {
+            addTimeOption(currentEventTime.end(), TimeRange.END_OF_DAY);
           }
-        } 
+        }
       } 
+       
     }
     if ((lastEventTime.end() - 1 != TimeRange.END_OF_DAY) && !earlyEnd) {
       addTimeOption(lastEventTime.end(), TimeRange.END_OF_DAY);
