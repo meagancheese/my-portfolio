@@ -53,7 +53,7 @@ public final class FindMeetingQuery {
     Collections.sort(eventsList, Event.ORDER_BY_START);
     TimeRange firstEventTime = eventsList.get(0).getWhen();
     TimeRange lastEventTime = eventsList.get(eventsList.size() - 1).getWhen();
-    boolean earlyEnd = false;
+    boolean lastEventSkipped = false;
     if (TimeRange.START_OF_DAY != firstEventTime.start()) {
       addTimeOption(TimeRange.START_OF_DAY, firstEventTime.start());
     }
@@ -77,7 +77,7 @@ public final class FindMeetingQuery {
         if (i + 1 < eventsList.size()) {
           addTimeOption(currentEventTime.end(), skipNextTime.start());
         } else {
-          earlyEnd = true;
+          lastEventSkipped = true;
           if (lastEventTime.end() - 1 != TimeRange.END_OF_DAY) {
             addTimeOption(currentEventTime.end(), TimeRange.END_OF_DAY);
           }
@@ -85,7 +85,7 @@ public final class FindMeetingQuery {
       } 
        
     }
-    if ((lastEventTime.end() - 1 != TimeRange.END_OF_DAY) && !earlyEnd) {
+    if ((lastEventTime.end() - 1 != TimeRange.END_OF_DAY) && !lastEventSkipped) {
       addTimeOption(lastEventTime.end(), TimeRange.END_OF_DAY);
     }
     
