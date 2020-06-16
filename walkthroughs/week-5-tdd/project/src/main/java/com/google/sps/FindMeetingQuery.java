@@ -53,9 +53,9 @@ public final class FindMeetingQuery {
     Collections.sort(eventsList, Event.ORDER_BY_START);
     TimeRange firstEventTime = eventsList.get(0).getWhen();
     TimeRange lastEventTime = eventsList.get(eventsList.size() - 1).getWhen();
-    boolean earlyEnd = false;
+    boolean lastEventSkipped = false;
     if (TimeRange.START_OF_DAY != firstEventTime.start()) {
-      addTimeRange(TimeRange.START_OF_DAY, firstEventTime.start());
+      addTimeOption(TimeRange.START_OF_DAY, firstEventTime.start());
     }
     for (int i = 1; i < eventsList.size(); i++) {
       TimeRange currentEventTime = eventsList.get(i - 1).getWhen();
@@ -64,24 +64,29 @@ public final class FindMeetingQuery {
       if (i + 1 < eventsList.size()) {
         skipNextTime = eventsList.get(i + 1).getWhen();
       }
-      if (!backToBack(currentEventTime, nextEventTime)) {
-        if (!currentEventTime.overlaps(nextEventTime)) {
-          addTimeRange(currentEventTime.end(), nextEventTime.start());
-        }
-        if (currentEventTime.contains(nextEventTime)) {
-          if (i + 1 < eventsList.size()) {
-            addTimeRange(currentEventTime.end(), skipNextTime.start());
-          } else {
-            earlyEnd = true;
-            if (lastEventTime.end() - 1 != TimeRange.END_OF_DAY) {
-              addTimeRange(currentEventTime.end(), TimeRange.END_OF_DAY);
-            }
+      if (backToBack(currentEventTime, nextEventTime)) {
+        // When two events are back-to-back, they can be considered as one long event
+        // and so we will add a meeting time option only after the next event.
+        continue;
+      }
+      if (!currentEventTime.overlaps(nextEventTime)) {
+        addTimeOption(currentEventTime.end(), nextEventTime.start());
+        continue;
+      }
+      if (currentEventTime.contains(nextEventTime)) {
+        if (i + 1 < eventsList.size()) {
+          addTimeOption(currentEventTime.end(), skipNextTime.start());
+        } else {
+          lastEventSkipped = true;
+          if (lastEventTime.end() - 1 != TimeRange.END_OF_DAY) {
+            addTimeOption(currentEventTime.end(), TimeRange.END_OF_DAY);
           }
-        } 
+        }
       } 
+       
     }
-    if ((lastEventTime.end() - 1 != TimeRange.END_OF_DAY) && !earlyEnd) {
-      addTimeRange(lastEventTime.end(), TimeRange.END_OF_DAY);
+    if ((lastEventTime.end() - 1 != TimeRange.END_OF_DAY) && !lastEventSkipped) {
+      addTimeOption(lastEventTime.end(), TimeRange.END_OF_DAY);
     }
     
     for (TimeRange meetingOption : timeOptions) {
@@ -93,13 +98,8 @@ public final class FindMeetingQuery {
     return Arrays.asList();
   }
   
-  private void addTimeRange(int start, int end) {
-    boolean inclusive;
-    if (end == TimeRange.END_OF_DAY) {
-      inclusive = true;
-    } else {
-      inclusive = false;
-    }
+  private void addTimeOption(int start, int end) {
+    boolean inclusive = end == TimeRange.END_OF_DAY;
     timeOptions.add(TimeRange.fromStartEnd(start, end, inclusive));
   }
   
