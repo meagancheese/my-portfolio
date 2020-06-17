@@ -24,24 +24,15 @@ import java.util.Set;
 
 public final class FindMeetingQuery {
   
-  private Collection<TimeRange> timeOptions = new ArrayList<TimeRange>();
-  
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    timeOptions.clear();
     
     if (request.getDuration() > TimeRange.WHOLE_DAY.duration()) {
       return Arrays.asList();
     }
     
-    Set<String> optionalRequestAttendees = new HashSet<>();
-    optionalRequestAttendees.addAll(request.getOptionalAttendees());
-    
-    Set<String> mandatoryRequestAttendees = new HashSet<>();
-    mandatoryRequestAttendees.addAll(request.getAttendees());
-    
-    Set<String> allRequestAttendees = new HashSet<>();
-    allRequestAttendees.addAll(optionalRequestAttendees);
-    allRequestAttendees.addAll(mandatoryRequestAttendees);
+    Set<String> optionalRequestAttendees = buildAttendeeSet(request.getOptionalAttendees());
+    Set<String> mandatoryRequestAttendees = buildAttendeeSet(request.getAttendees());
+    Set<String> allRequestAttendees = combineAttendeeSets(optionalRequestAttendees, mandatoryRequestAttendees);
     
     if (allRequestAttendees.isEmpty() || events.isEmpty()) {
       return Arrays.asList(TimeRange.WHOLE_DAY);
@@ -62,57 +53,107 @@ public final class FindMeetingQuery {
       return Arrays.asList(TimeRange.WHOLE_DAY);
     }
     
-    List<Event> eventsList = new ArrayList<Event>();
-    eventsList.addAll(events);
-    Collections.sort(eventsList, Event.ORDER_BY_START);
+    List<Event> allEvents = new ArrayList<Event>();
+    allEvents.addAll(events);
+    sortByStart(allEvents);
     
     List<Event> optionalAttendeeEvents = new ArrayList<Event>();
-    for (Event event : eventsList) {
-      if (optionalAttendeesOnly(event, optionalRequestAttendees)) {
+    List<Event> mandatoryAttendeeEvents = new ArrayList<Event>();
+    for (Event event : allEvents) {
+      if (optionalAttendeesOnly(event, mandatoryRequestAttendees)) {
         optionalAttendeeEvents.add(event);
+      } else {
+        mandatoryAttendeeEvents.add(event);
       }
     }
+    sortByStart(optionalAttendeeEvents);
+    sortByStart(mandatoryAttendeeEvents);
+  
+    Collection<TimeRange> everyoneTimeOptions = getAllPossibleTimes(allEvents, request);
     
-    List<Event> mandatoryAttendeeEvents = eventsList.removeAll(optionalAttendeeEvents);
-    
+    if (everyoneTimeOptions.isEmpty() && !mandatoryAttendeeEvents.isEmpty()) {
+      return getAllPossibleTimes(mandatoryAttendeeEvents, request);
+    }
+   
+    return everyoneTimeOptions;
+  }
+  
+  
+  private void sortByStart(List<Event> eventsList) {
+    Collections.sort(eventsList, Event.ORDER_BY_START);
+  }
+  
+  
+  private Set<String> buildAttendeeSet(Collection<String> attendees) {
+    Set<String> attendeeSet = new HashSet<>();
+    attendeeSet.addAll(attendees);
+    return attendeeSet;
+  }
+  
+  
+  private Set<String> combineAttendeeSets(Collection<String> attendeeSetOne, Collection<String> attendeeSetTwo) {
+    Set<String> combinedSet = buildAttendeeSet(attendeeSetOne);
+    combinedSet.addAll(attendeeSetTwo);
+    return combinedSet;
+  }
+  
+  
+  private void addTimeOption(Collection<TimeRange> timeOptions, int start, int end) {
+    boolean inclusive = end == TimeRange.END_OF_DAY;
+    timeOptions.add(TimeRange.fromStartEnd(start, end, inclusive));
+  }
+  
+  
+  private boolean backToBack(TimeRange firstTimeRange, TimeRange secondTimeRange) {
+    return firstTimeRange.end() == secondTimeRange.start();
+  }
+  
+  
+  private boolean optionalAttendeesOnly(Event event, Set<String> mandatoryAttendees) {
+    for (String attendee : mandatoryAttendees) {
+      if (event.getAttendees().contains(attendee)) {
+        return false;
+      }
+    }
+    return true;
+  }
+  
+  
+  private Collection<TimeRange> getAllPossibleTimes(List<Event> eventsList, MeetingRequest request) {
+    Collection<TimeRange> timeOptions = new ArrayList<TimeRange>();
     TimeRange firstEventTime = eventsList.get(0).getWhen();
     TimeRange lastEventTime = eventsList.get(eventsList.size() - 1).getWhen();
     boolean lastEventSkipped = false;
     if (TimeRange.START_OF_DAY != firstEventTime.start()) {
-      addTimeOption(TimeRange.START_OF_DAY, firstEventTime.start());
+      addTimeOption(timeOptions, TimeRange.START_OF_DAY, firstEventTime.start());
     }
+    TimeRange currentEventTime = firstEventTime;
     for (int i = 1; i < eventsList.size(); i++) {
-      TimeRange currentEventTime = eventsList.get(i - 1).getWhen();
       TimeRange nextEventTime = eventsList.get(i).getWhen();
-      TimeRange skipNextTime = null; 
-      if (i + 1 < eventsList.size()) {
-        skipNextTime = eventsList.get(i + 1).getWhen();
-      }
       if (backToBack(currentEventTime, nextEventTime)) {
         // When two events are back-to-back, they can be considered as one long event
         // and so we will add a meeting time option only after the next event.
+        currentEventTime = nextEventTime;
         continue;
       }
       if (!currentEventTime.overlaps(nextEventTime)) {
-        addTimeOption(currentEventTime.end(), nextEventTime.start());
+        addTimeOption(timeOptions, currentEventTime.end(), nextEventTime.start());
+        currentEventTime = nextEventTime;
         continue;
       }
       if (currentEventTime.contains(nextEventTime)) {
-        if (i + 1 < eventsList.size()) {
-          addTimeOption(currentEventTime.end(), skipNextTime.start());
-        } else {
-          lastEventSkipped = true;
-          if (currentEventTime.end() - 1 != TimeRange.END_OF_DAY) {
-            addTimeOption(currentEventTime.end(), TimeRange.END_OF_DAY);
-          }
-        }
-      } 
-       
+        continue;
+      }
+      currentEventTime = nextEventTime;
     }
-    if ((lastEventTime.end() - 1 != TimeRange.END_OF_DAY) && !lastEventSkipped) {
-      addTimeOption(lastEventTime.end(), TimeRange.END_OF_DAY);
+    if ((currentEventTime.end() - 1) != TimeRange.END_OF_DAY) {
+      addTimeOption(timeOptions, currentEventTime.end(), TimeRange.END_OF_DAY);
     }
-    
+    return removeTooSmallTimes(timeOptions, request);
+  }
+  
+  
+  private Collection<TimeRange> removeTooSmallTimes(Collection<TimeRange> timeOptions, MeetingRequest request) {
     Collection<TimeRange> tooShortTimeOptions = new ArrayList<TimeRange>();
     for (TimeRange meetingOption : timeOptions) {
       if (meetingOption.duration() < request.getDuration()) {
@@ -120,29 +161,6 @@ public final class FindMeetingQuery {
       }
     }
     timeOptions.removeAll(tooShortTimeOptions);
-    
     return timeOptions;
-  }
-  
-  private void addTimeOption(int start, int end) {
-    boolean inclusive = end == TimeRange.END_OF_DAY;
-    timeOptions.add(TimeRange.fromStartEnd(start, end, inclusive));
-  }
-  
-  private boolean backToBack(TimeRange firstTimeRange, TimeRange secondTimeRange) {
-    return firstTimeRange.end() == secondTimeRange.start();
-  }
-  
-  private boolean optionalAttendeesOnly(Event event, Set<String> optionalAttendees) {
-    int optionalAttendeeCount = 0;
-    for (String attendee : optionalAttendees) {
-      if (event.getAttendees().contains(attendee)) {
-        optionalAttendeeCount++;
-      }
-    }
-    if (event.getAttendees().size() == optionalAttendeeCount) {
-      return true;
-    }
-    return false;
   }
 }
