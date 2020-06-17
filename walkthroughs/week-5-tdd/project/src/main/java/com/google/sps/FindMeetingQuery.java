@@ -55,6 +55,12 @@ public final class FindMeetingQuery {
     List<Event> allEvents = new ArrayList<Event>();
     allEvents.addAll(events);
     sortByStart(allEvents);
+  
+    Collection<TimeRange> everyoneTimeOptions = getAllPossibleTimes(allEvents, request);
+    
+    if (!everyoneTimeOptions.isEmpty()) {
+      return everyoneTimeOptions;
+    }
     
     List<Event> mandatoryAttendeeEvents = new ArrayList<Event>();
     for (Event event : allEvents) {
@@ -63,10 +69,8 @@ public final class FindMeetingQuery {
       }
     }
     sortByStart(mandatoryAttendeeEvents);
-  
-    Collection<TimeRange> everyoneTimeOptions = getAllPossibleTimes(allEvents, request);
     
-    if (everyoneTimeOptions.isEmpty() && !mandatoryAttendeeEvents.isEmpty()) {
+    if (!mandatoryAttendeeEvents.isEmpty()) {
       return getAllPossibleTimes(mandatoryAttendeeEvents, request);
     }
    
