@@ -62,16 +62,19 @@ public final class FindMeetingQuery {
       return Arrays.asList(TimeRange.WHOLE_DAY);
     }
     
+    List<Event> eventsList = new ArrayList<Event>();
+    eventsList.addAll(events);
+    Collections.sort(eventsList, Event.ORDER_BY_START);
+    
     List<Event> optionalAttendeeEvents = new ArrayList<Event>();
-    for (Event event : events) {
+    for (Event event : eventsList) {
       if (optionalAttendeesOnly(event, optionalRequestAttendees)) {
         optionalAttendeeEvents.add(event);
       }
     }
     
-    List<Event> eventsList = new ArrayList<Event>();
-    eventsList.addAll(events);
-    Collections.sort(eventsList, Event.ORDER_BY_START);
+    List<Event> mandatoryAttendeeEvents = eventsList.removeAll(optionalAttendeeEvents);
+    
     TimeRange firstEventTime = eventsList.get(0).getWhen();
     TimeRange lastEventTime = eventsList.get(eventsList.size() - 1).getWhen();
     boolean lastEventSkipped = false;
