@@ -93,13 +93,15 @@ public final class FindMeetingQuery {
       addTimeOption(lastEventTime.end(), TimeRange.END_OF_DAY);
     }
     
+    Collection<TimeRange> tooShortTimeOptions = new ArrayList<TimeRange>();
     for (TimeRange meetingOption : timeOptions) {
-      if (meetingOption.duration() >= request.getDuration()) {
-        return timeOptions;
+      if (meetingOption.duration() < request.getDuration()) {
+        tooShortTimeOptions.add(meetingOption);
       }
     }
+    timeOptions.removeAll(tooShortTimeOptions);
     
-    return Arrays.asList();
+    return timeOptions;
   }
   
   private void addTimeOption(int start, int end) {
