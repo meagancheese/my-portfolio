@@ -28,11 +28,22 @@ public final class FindMeetingQuery {
   
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
     timeOptions.clear();
+    
     if (request.getDuration() > TimeRange.WHOLE_DAY.duration()) {
       return Arrays.asList();
     }
     
-    if (request.getAttendees().isEmpty() || events.isEmpty()) {
+    Set<String> optionalRequestAttendees = new HashSet<>();
+    optionalRequestAttendees.addAll(request.getOptionalAttendees());
+    
+    Set<String> mandatoryRequestAttendees = new HashSet<>();
+    mandatoryRequestAttendees.addAll(request.getAttendees());
+    
+    Set<String> allRequestAttendees = new HashSet<>();
+    allRequestAttendees.addAll(optionalRequestAttendees);
+    allRequestAttendees.addAll(mandatoryRequestAttendees);
+    
+    if (allRequestAttendees.isEmpty() || events.isEmpty()) {
       return Arrays.asList(TimeRange.WHOLE_DAY);
     }
     
@@ -40,8 +51,7 @@ public final class FindMeetingQuery {
     for (Event event : events) {
       allEventAttendees.addAll(event.getAttendees());
     }
-    Set<String> allRequestAttendees = new HashSet<>();
-    allRequestAttendees.addAll(request.getAttendees());
+    
     int attendeesWithNoEvents = 0;
     for (String attendee : allRequestAttendees) {
       if (!allEventAttendees.contains(attendee)) {
@@ -50,6 +60,13 @@ public final class FindMeetingQuery {
     }
     if (attendeesWithNoEvents == allRequestAttendees.size()) {
       return Arrays.asList(TimeRange.WHOLE_DAY);
+    }
+    
+    List<Event> optionalAttendeeEvents = new ArrayList<Event>();
+    for (Event event : events) {
+      if (optionalAttendeesOnly(event, optionalRequestAttendees)) {
+        optionalAttendeeEvents.add(event);
+      }
     }
     
     List<Event> eventsList = new ArrayList<Event>();
@@ -111,5 +128,18 @@ public final class FindMeetingQuery {
   
   private boolean backToBack(TimeRange firstTimeRange, TimeRange secondTimeRange) {
     return firstTimeRange.end() == secondTimeRange.start();
+  }
+  
+  private boolean optionalAttendeesOnly(Event event, Set<String> optionalAttendees) {
+    int optionalAttendeeCount = 0;
+    for (String attendee : optionalAttendees) {
+      if (event.getAttendees().contains(attendee)) {
+        optionalAttendeeCount++;
+      }
+    }
+    if (event.getAttendees().size() == optionalAttendeeCount) {
+      return true;
+    }
+    return false;
   }
 }
