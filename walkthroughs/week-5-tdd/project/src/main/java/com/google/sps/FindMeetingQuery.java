@@ -78,7 +78,7 @@ public final class FindMeetingQuery {
           addTimeOption(currentEventTime.end(), skipNextTime.start());
         } else {
           lastEventSkipped = true;
-          if (lastEventTime.end() - 1 != TimeRange.END_OF_DAY) {
+          if (currentEventTime.end() - 1 != TimeRange.END_OF_DAY) {
             addTimeOption(currentEventTime.end(), TimeRange.END_OF_DAY);
           }
         }
