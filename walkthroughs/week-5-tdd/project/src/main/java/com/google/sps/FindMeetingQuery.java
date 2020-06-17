@@ -29,8 +29,8 @@ public final class FindMeetingQuery {
       return Arrays.asList();
     }
     
-    Set<String> optionalRequestAttendees = buildAttendeeSet(request.getOptionalAttendees());
-    Set<String> mandatoryRequestAttendees = buildAttendeeSet(request.getAttendees());
+    Set<String> optionalRequestAttendees = new HashSet<String>(request.getOptionalAttendees());
+    Set<String> mandatoryRequestAttendees = new HashSet<String>(request.getAttendees());
     Set<String> allRequestAttendees = combineAttendeeSets(optionalRequestAttendees, mandatoryRequestAttendees);
     
     if (allRequestAttendees.isEmpty() || events.isEmpty()) {
@@ -77,14 +77,8 @@ public final class FindMeetingQuery {
     return everyoneTimeOptions;
   }
   
-  private Set<String> buildAttendeeSet(Collection<String> attendees) {
-    Set<String> attendeeSet = new HashSet<>();
-    attendeeSet.addAll(attendees);
-    return attendeeSet;
-  }
-  
   private Set<String> combineAttendeeSets(Collection<String> attendeeSetOne, Collection<String> attendeeSetTwo) {
-    Set<String> combinedSet = buildAttendeeSet(attendeeSetOne);
+    Set<String> combinedSet = new HashSet<String>(attendeeSetOne);
     combinedSet.addAll(attendeeSetTwo);
     return combinedSet;
   }
