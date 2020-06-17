@@ -42,10 +42,14 @@ public final class FindMeetingQuery {
     }
     Set<String> allRequestAttendees = new HashSet<>();
     allRequestAttendees.addAll(request.getAttendees());
+    int attendeesWithNoEvents = 0;
     for (String attendee : allRequestAttendees) {
       if (!allEventAttendees.contains(attendee)) {
-        return Arrays.asList(TimeRange.WHOLE_DAY);
+        attendeesWithNoEvents++;
       }
+    }
+    if (attendeesWithNoEvents == allRequestAttendees.size()) {
+      return Arrays.asList(TimeRange.WHOLE_DAY);
     }
     
     List<Event> eventsList = new ArrayList<Event>();
