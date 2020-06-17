@@ -56,16 +56,12 @@ public final class FindMeetingQuery {
     allEvents.addAll(events);
     sortByStart(allEvents);
     
-    List<Event> optionalAttendeeEvents = new ArrayList<Event>();
     List<Event> mandatoryAttendeeEvents = new ArrayList<Event>();
     for (Event event : allEvents) {
-      if (optionalAttendeesOnly(event, mandatoryRequestAttendees)) {
-        optionalAttendeeEvents.add(event);
-      } else {
+      if (!optionalAttendeesOnly(event, mandatoryRequestAttendees)) {
         mandatoryAttendeeEvents.add(event);
       }
     }
-    sortByStart(optionalAttendeeEvents);
     sortByStart(mandatoryAttendeeEvents);
   
     Collection<TimeRange> everyoneTimeOptions = getAllPossibleTimes(allEvents, request);
