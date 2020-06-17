@@ -78,18 +78,11 @@ public final class FindMeetingQuery {
     return everyoneTimeOptions;
   }
   
-  
-  private void sortByStart(List<Event> eventsList) {
-    Collections.sort(eventsList, Event.ORDER_BY_START);
-  }
-  
-  
   private Set<String> buildAttendeeSet(Collection<String> attendees) {
     Set<String> attendeeSet = new HashSet<>();
     attendeeSet.addAll(attendees);
     return attendeeSet;
   }
-  
   
   private Set<String> combineAttendeeSets(Collection<String> attendeeSetOne, Collection<String> attendeeSetTwo) {
     Set<String> combinedSet = buildAttendeeSet(attendeeSetOne);
@@ -97,17 +90,9 @@ public final class FindMeetingQuery {
     return combinedSet;
   }
   
-  
-  private void addTimeOption(Collection<TimeRange> timeOptions, int start, int end) {
-    boolean inclusive = end == TimeRange.END_OF_DAY;
-    timeOptions.add(TimeRange.fromStartEnd(start, end, inclusive));
+  private void sortByStart(List<Event> eventsList) {
+    Collections.sort(eventsList, Event.ORDER_BY_START);
   }
-  
-  
-  private boolean backToBack(TimeRange firstTimeRange, TimeRange secondTimeRange) {
-    return firstTimeRange.end() == secondTimeRange.start();
-  }
-  
   
   private boolean optionalAttendeesOnly(Event event, Set<String> mandatoryAttendees) {
     for (String attendee : mandatoryAttendees) {
@@ -117,7 +102,6 @@ public final class FindMeetingQuery {
     }
     return true;
   }
-  
   
   private Collection<TimeRange> getAllPossibleTimes(List<Event> eventsList, MeetingRequest request) {
     Collection<TimeRange> timeOptions = new ArrayList<TimeRange>();
@@ -144,6 +128,7 @@ public final class FindMeetingQuery {
       if (currentEventTime.contains(nextEventTime)) {
         continue;
       }
+      // When two events overlap but currentEventTime does not contain nextEventTime
       currentEventTime = nextEventTime;
     }
     if ((currentEventTime.end() - 1) != TimeRange.END_OF_DAY) {
@@ -152,6 +137,14 @@ public final class FindMeetingQuery {
     return removeTooSmallTimes(timeOptions, request);
   }
   
+  private void addTimeOption(Collection<TimeRange> timeOptions, int start, int end) {
+    boolean inclusive = end == TimeRange.END_OF_DAY;
+    timeOptions.add(TimeRange.fromStartEnd(start, end, inclusive));
+  }
+  
+  private boolean backToBack(TimeRange firstTimeRange, TimeRange secondTimeRange) {
+    return firstTimeRange.end() == secondTimeRange.start();
+  }
   
   private Collection<TimeRange> removeTooSmallTimes(Collection<TimeRange> timeOptions, MeetingRequest request) {
     Collection<TimeRange> tooShortTimeOptions = new ArrayList<TimeRange>();
