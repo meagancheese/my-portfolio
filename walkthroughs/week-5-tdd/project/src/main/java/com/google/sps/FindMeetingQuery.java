@@ -52,8 +52,7 @@ public final class FindMeetingQuery {
       return Arrays.asList(TimeRange.WHOLE_DAY);
     }
     
-    List<Event> allEvents = new ArrayList<Event>();
-    allEvents.addAll(events);
+    List<Event> allEvents = new ArrayList<Event>(events);
     sortByStart(allEvents);
   
     Collection<TimeRange> everyoneTimeOptions = getAllPossibleTimes(allEvents, request);
