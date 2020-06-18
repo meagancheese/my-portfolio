@@ -35,6 +35,7 @@ public final class FindMeetingQueryTest {
   private static final String PERSON_A = "Person A";
   private static final String PERSON_B = "Person B";
   private static final String PERSON_C = "Person C";
+  private static final String PERSON_D = "Person D";
 
   // All dates are the first day of the year 2020.
   private static final int TIME_0800AM = TimeRange.getTimeInMinutes(8, 0);
@@ -403,6 +404,34 @@ public final class FindMeetingQueryTest {
     Collection<TimeRange> actual = query.query(events, request);
     Collection<TimeRange> expected = Arrays.asList();
 
+    Assert.assertEquals(expected, actual);
+  }
+  
+  @Test
+  public void addsOneOptionalAttendee() {
+    // Two mandatory attendees and two optional attendees, but only one optional attendee can 
+    // attend.
+    //
+    // Events  :   |--A--|      |--B--|
+    //           |--C----|--D---| 
+    // Day     : |--------------------|
+    // Options :         |------|
+    
+    Collection<Event> events = Arrays.asList(
+      new Event("Event 1", TimeRange.fromStartDuration(TIME_0900AM, DURATION_30_MINUTES),
+          Arrays.asList(PERSON_A)),
+      new Event("Event 2", TimeRange.fromStartEnd(TIME_1100AM, TimeRange.END_OF_DAY, true),
+          Arrays.asList(PERSON_B)),
+      new Event("Event 3", TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0930AM, false),
+          Arrays.asList(PERSON_C)),
+      new Event("Event 4", TimeRange.fromStartEnd(TIME_0930AM, TIME_1100AM, false),
+          Arrays.asList(PERSON_D)));
+    
+    MeetingRequest request = new MeetingRequest(Arrays.asList(PERSON_A, PERSON_B), Arrays.asList(PERSON_C, PERSON_D), DURATION_60_MINUTES);
+    
+    Collection<TimeRange> actual = query.query(events, request);
+    Collection<TimeRange> expected = Arrays.asList(TimeRange.fromStartEnd(TIME_0930AM, TIME_1100AM, false));
+    
     Assert.assertEquals(expected, actual);
   }
 }
