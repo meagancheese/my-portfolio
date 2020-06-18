@@ -62,12 +62,16 @@ public final class FindMeetingQuery {
     }
     
     List<Event> mandatoryAttendeeEvents = new ArrayList<Event>();
+    List<Event> optionalAttendeeEvents = new ArrayList<Event>();
     for (Event event : allEvents) {
       if (!optionalAttendeesOnly(event, mandatoryRequestAttendees)) {
         mandatoryAttendeeEvents.add(event);
+      } else {
+        optionalAttendeeEvents.add(event);
       }
     }
     sortByStart(mandatoryAttendeeEvents);
+    sortByStart(optionalAttendeeEvents);
     
     if (!mandatoryAttendeeEvents.isEmpty()) {
       return getAllPossibleTimes(mandatoryAttendeeEvents, request);
