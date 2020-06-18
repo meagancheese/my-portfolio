@@ -24,15 +24,16 @@ import java.util.Set;
 
 public final class FindMeetingQuery {
   
-  private Collection<TimeRange> timeOptions = new ArrayList<TimeRange>();
-  
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    timeOptions.clear();
     if (request.getDuration() > TimeRange.WHOLE_DAY.duration()) {
       return Arrays.asList();
     }
     
-    if (request.getAttendees().isEmpty() || events.isEmpty()) {
+    Set<String> optionalRequestAttendees = new HashSet<String>(request.getOptionalAttendees());
+    Set<String> mandatoryRequestAttendees = new HashSet<String>(request.getAttendees());
+    Set<String> allRequestAttendees = combineAttendeeSets(optionalRequestAttendees, mandatoryRequestAttendees);
+    
+    if (allRequestAttendees.isEmpty() || events.isEmpty()) {
       return Arrays.asList(TimeRange.WHOLE_DAY);
     }
     
@@ -40,70 +41,111 @@ public final class FindMeetingQuery {
     for (Event event : events) {
       allEventAttendees.addAll(event.getAttendees());
     }
-    Set<String> allRequestAttendees = new HashSet<>();
-    allRequestAttendees.addAll(request.getAttendees());
+    
+    int attendeesWithNoEvents = 0;
     for (String attendee : allRequestAttendees) {
       if (!allEventAttendees.contains(attendee)) {
-        return Arrays.asList(TimeRange.WHOLE_DAY);
+        attendeesWithNoEvents++;
       }
     }
+    if (attendeesWithNoEvents == allRequestAttendees.size()) {
+      return Arrays.asList(TimeRange.WHOLE_DAY);
+    }
     
-    List<Event> eventsList = new ArrayList<Event>();
-    eventsList.addAll(events);
+    List<Event> allEvents = new ArrayList<Event>(events);
+    sortByStart(allEvents);
+  
+    Collection<TimeRange> everyoneTimeOptions = getAllPossibleTimes(allEvents, request);
+    
+    if (!everyoneTimeOptions.isEmpty()) {
+      return everyoneTimeOptions;
+    }
+    
+    List<Event> mandatoryAttendeeEvents = new ArrayList<Event>();
+    for (Event event : allEvents) {
+      if (!optionalAttendeesOnly(event, mandatoryRequestAttendees)) {
+        mandatoryAttendeeEvents.add(event);
+      }
+    }
+    sortByStart(mandatoryAttendeeEvents);
+    
+    if (!mandatoryAttendeeEvents.isEmpty()) {
+      return getAllPossibleTimes(mandatoryAttendeeEvents, request);
+    }
+   
+    return everyoneTimeOptions;
+  }
+  
+  private Set<String> combineAttendeeSets(Collection<String> attendeeSetOne, Collection<String> attendeeSetTwo) {
+    Set<String> combinedSet = new HashSet<String>(attendeeSetOne);
+    combinedSet.addAll(attendeeSetTwo);
+    return combinedSet;
+  }
+  
+  private void sortByStart(List<Event> eventsList) {
     Collections.sort(eventsList, Event.ORDER_BY_START);
+  }
+  
+  private boolean optionalAttendeesOnly(Event event, Set<String> mandatoryAttendees) {
+    for (String attendee : mandatoryAttendees) {
+      if (event.getAttendees().contains(attendee)) {
+        return false;
+      }
+    }
+    return true;
+  }
+  
+  private Collection<TimeRange> getAllPossibleTimes(List<Event> eventsList, MeetingRequest request) {
+    Collection<TimeRange> timeOptions = new ArrayList<TimeRange>();
     TimeRange firstEventTime = eventsList.get(0).getWhen();
     TimeRange lastEventTime = eventsList.get(eventsList.size() - 1).getWhen();
     boolean lastEventSkipped = false;
     if (TimeRange.START_OF_DAY != firstEventTime.start()) {
-      addTimeOption(TimeRange.START_OF_DAY, firstEventTime.start());
+      addTimeOption(timeOptions, TimeRange.START_OF_DAY, firstEventTime.start());
     }
+    TimeRange currentEventTime = firstEventTime;
     for (int i = 1; i < eventsList.size(); i++) {
-      TimeRange currentEventTime = eventsList.get(i - 1).getWhen();
       TimeRange nextEventTime = eventsList.get(i).getWhen();
-      TimeRange skipNextTime = null; 
-      if (i + 1 < eventsList.size()) {
-        skipNextTime = eventsList.get(i + 1).getWhen();
-      }
       if (backToBack(currentEventTime, nextEventTime)) {
         // When two events are back-to-back, they can be considered as one long event
         // and so we will add a meeting time option only after the next event.
+        currentEventTime = nextEventTime;
         continue;
       }
       if (!currentEventTime.overlaps(nextEventTime)) {
-        addTimeOption(currentEventTime.end(), nextEventTime.start());
+        addTimeOption(timeOptions, currentEventTime.end(), nextEventTime.start());
+        currentEventTime = nextEventTime;
         continue;
       }
       if (currentEventTime.contains(nextEventTime)) {
-        if (i + 1 < eventsList.size()) {
-          addTimeOption(currentEventTime.end(), skipNextTime.start());
-        } else {
-          lastEventSkipped = true;
-          if (currentEventTime.end() - 1 != TimeRange.END_OF_DAY) {
-            addTimeOption(currentEventTime.end(), TimeRange.END_OF_DAY);
-          }
-        }
-      } 
-       
-    }
-    if ((lastEventTime.end() - 1 != TimeRange.END_OF_DAY) && !lastEventSkipped) {
-      addTimeOption(lastEventTime.end(), TimeRange.END_OF_DAY);
-    }
-    
-    for (TimeRange meetingOption : timeOptions) {
-      if (meetingOption.duration() >= request.getDuration()) {
-        return timeOptions;
+        continue;
       }
+      // When two events overlap but currentEventTime does not contain nextEventTime
+      currentEventTime = nextEventTime;
     }
-    
-    return Arrays.asList();
+    if ((currentEventTime.end() - 1) != TimeRange.END_OF_DAY) {
+      addTimeOption(timeOptions, currentEventTime.end(), TimeRange.END_OF_DAY);
+    }
+    return removeTooSmallTimes(timeOptions, request);
   }
   
-  private void addTimeOption(int start, int end) {
+  private void addTimeOption(Collection<TimeRange> timeOptions, int start, int end) {
     boolean inclusive = end == TimeRange.END_OF_DAY;
     timeOptions.add(TimeRange.fromStartEnd(start, end, inclusive));
   }
   
   private boolean backToBack(TimeRange firstTimeRange, TimeRange secondTimeRange) {
     return firstTimeRange.end() == secondTimeRange.start();
+  }
+  
+  private Collection<TimeRange> removeTooSmallTimes(Collection<TimeRange> timeOptions, MeetingRequest request) {
+    Collection<TimeRange> tooShortTimeOptions = new ArrayList<TimeRange>();
+    for (TimeRange meetingOption : timeOptions) {
+      if (meetingOption.duration() < request.getDuration()) {
+        tooShortTimeOptions.add(meetingOption);
+      }
+    }
+    timeOptions.removeAll(tooShortTimeOptions);
+    return timeOptions;
   }
 }
