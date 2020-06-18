@@ -412,17 +412,17 @@ public final class FindMeetingQueryTest {
     // Two mandatory attendees and two optional attendees, but only one optional attendee can 
     // attend.
     //
-    // Events  :   |--A--|      |--B--|
-    //           |--C----|--D---| 
+    // Events  : |----A--|      |--B--|
+    //             |--C--|--D---| 
     // Day     : |--------------------|
     // Options :         |------|
     
     Collection<Event> events = Arrays.asList(
-      new Event("Event 1", TimeRange.fromStartDuration(TIME_0900AM, DURATION_30_MINUTES),
+      new Event("Event 1", TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0930AM, false),
           Arrays.asList(PERSON_A)),
       new Event("Event 2", TimeRange.fromStartEnd(TIME_1100AM, TimeRange.END_OF_DAY, true),
           Arrays.asList(PERSON_B)),
-      new Event("Event 3", TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0930AM, false),
+      new Event("Event 3", TimeRange.fromStartEnd(TIME_0830AM, TIME_0930AM, false),
           Arrays.asList(PERSON_C)),
       new Event("Event 4", TimeRange.fromStartEnd(TIME_0930AM, TIME_1100AM, false),
           Arrays.asList(PERSON_D)));

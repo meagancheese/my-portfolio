@@ -73,11 +73,32 @@ public final class FindMeetingQuery {
     sortByStart(mandatoryAttendeeEvents);
     sortByStart(optionalAttendeeEvents);
     
-    if (!mandatoryAttendeeEvents.isEmpty()) {
-      return getAllPossibleTimes(mandatoryAttendeeEvents, request);
+    if (mandatoryAttendeeEvents.isEmpty()) {
+      return everyoneTimeOptions;
     }
-   
-    return everyoneTimeOptions;
+    
+    Collection<TimeRange> mandatoryAttendeeTimeOptions = getAllPossibleTimes(mandatoryAttendeeEvents, request);
+    
+    List<Event> optionalAttendeeSafeEvents = new ArrayList<Event>();
+    
+    for (Event event : optionalAttendeeEvents) {
+      List<Event> mandatoryAttendeeEventsPlusEvent = new ArrayList<Event>(mandatoryAttendeeEvents);
+      mandatoryAttendeeEventsPlusEvent.add(event);
+      sortByStart(mandatoryAttendeeEventsPlusEvent);
+      if (!getAllPossibleTimes(mandatoryAttendeeEventsPlusEvent, request).isEmpty()) {
+        optionalAttendeeSafeEvents.add(event);
+      }
+    }
+    
+    if (optionalAttendeeSafeEvents.isEmpty()) {
+      return mandatoryAttendeeTimeOptions;
+    }
+    
+    List<Event> mandatoryAttendeeEventsPlusOptionalSafeEvents = new ArrayList<Event>(mandatoryAttendeeEvents);
+    mandatoryAttendeeEventsPlusOptionalSafeEvents.addAll(optionalAttendeeSafeEvents);
+    sortByStart(mandatoryAttendeeEventsPlusOptionalSafeEvents);
+    
+    return getAllPossibleTimes(mandatoryAttendeeEventsPlusOptionalSafeEvents, request);
   }
   
   private Set<String> combineAttendeeSets(Collection<String> attendeeSetOne, Collection<String> attendeeSetTwo) {
