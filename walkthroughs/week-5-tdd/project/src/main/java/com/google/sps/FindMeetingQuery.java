@@ -79,6 +79,7 @@ public final class FindMeetingQuery {
     
     Collection<TimeRange> mandatoryAttendeeTimeOptions = getAllPossibleTimes(mandatoryAttendeeEvents, request);
     
+    // Here's where things need fixing.
     List<Event> optionalAttendeeSafeEvents = new ArrayList<Event>();
     
     for (Event event : optionalAttendeeEvents) {
