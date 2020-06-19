@@ -536,4 +536,32 @@ public final class FindMeetingQueryTest {
     
     Assert.assertEquals(expected, actual);
   }
+  
+  @Test
+  public void optimizesWhenOptionalAttendeesHaveSeveralEvents() {
+    // Attendees should be considered individually, not events by themselves. This tests that one optional participant's
+    // events are considered together.
+    //
+    // Events  : |--A--|--B--|--C--|
+    //                         |-A-|
+    // Day     : |-----------------|
+    // Options : |-----|
+    
+    Collection<Event> events = Arrays.asList(
+      new Event("Event 1", TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0800AM, false),
+          Arrays.asList(PERSON_A)),
+      new Event("Event 2", TimeRange.fromStartEnd(TIME_0800AM, TIME_1100AM, false),
+          Arrays.asList(PERSON_B)),
+      new Event("Event 3", TimeRange.fromStartEnd(TIME_1100AM, TimeRange.END_OF_DAY, true),
+          Arrays.asList(PERSON_C)),
+      new Event("Event 4", TimeRange.fromStartEnd(TIME_1100AM + 30, TimeRange.END_OF_DAY, true),
+          Arrays.asList(PERSON_A)));
+    
+    MeetingRequest request = new MeetingRequest(Arrays.asList(PERSON_B), Arrays.asList(PERSON_A, PERSON_C), DURATION_1_HOUR);
+    
+    Collection<TimeRange> actual = query.query(events, request);
+    Collection<TimeRange> expected = Arrays.asList(TimeRange.fromStartEnd(TIME_1100AM, TimeRange.END_OF_DAY, true));
+    
+    Assert.assertEquals(expected, actual);
+  }
 }
