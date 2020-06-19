@@ -93,7 +93,6 @@ public final class FindMeetingQuery {
           thisOptionalAttendeeEvents.add(event);
         }
       }
-      sortByStart(thisOptionalAttendeeEvents);
       optionalAttendeeEventsCollection.add(thisOptionalAttendeeEvents);
     }
     
