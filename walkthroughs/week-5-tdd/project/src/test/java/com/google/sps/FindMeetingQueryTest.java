@@ -566,4 +566,29 @@ public final class FindMeetingQueryTest {
     
     Assert.assertEquals(expected, actual);
   }
+  
+  @Test
+  public void optimizesWhenMandatoryAttendeeHasNoEvents() {
+    // Tests to see that an optimal schedule is still returned when a mandatory attendee has no events.
+    //
+    // Events  : |--A--|--B--|
+    //           |--C--|    
+    // Day     : |-----------|
+    // Options :       |-----|
+    
+    Collection<Event> events = Arrays.asList(
+      new Event("Event 1", TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0800AM, false),
+          Arrays.asList(PERSON_A)),
+      new Event("Event 2", TimeRange.fromStartEnd(TIME_0800AM, TimeRange.END_OF_DAY, true),
+          Arrays.asList(PERSON_B)),
+      new Event("Event 3", TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0800AM, false),
+          Arrays.asList(PERSON_C)));
+    
+    MeetingRequest request = new MeetingRequest(NO_ATTENDEES, Arrays.asList(PERSON_A, PERSON_B, PERSON_C), DURATION_1_HOUR);
+    
+    Collection<TimeRange> actual = query.query(events, request);
+    Collection<TimeRange> expected = Arrays.asList(TimeRange.fromStartEnd(TIME_0800AM, TimeRange.END_OF_DAY, true));
+    
+    Assert.assertEquals(expected, actual);
+  }
 }
