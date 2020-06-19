@@ -79,8 +79,8 @@ public final class FindMeetingQuery {
     
     ArrayList<TimeRange> mandatoryAttendeeTimeOptions = getAllPossibleTimes(mandatoryAttendeeEvents, request);
     
-    List<ArrayList<TimeRange>> possibleTimeOptionsCollection = new ArrayList<ArrayList<TimeRange>>();
-    possibleTimeOptionsCollection.add(mandatoryAttendeeTimeOptions);
+    List<ArrayList<TimeRange>> possibleTimeOptions = new ArrayList<ArrayList<TimeRange>>();
+    possibleTimeOptions.add(mandatoryAttendeeTimeOptions);
     
     List<ArrayList<Event>> optionalAttendeeEventsCollection = new ArrayList<ArrayList<Event>>();
     
@@ -97,11 +97,11 @@ public final class FindMeetingQuery {
       optionalAttendeeEventsCollection.add(thisOptionalAttendeeEvents);
     }
     
-    possibleTimeOptionsCollection = addOptionalAttendees(
-      possibleTimeOptionsCollection, optionalAttendeeEventsCollection, mandatoryAttendeeEvents, request
+    possibleTimeOptions = addOptionalAttendees(
+      possibleTimeOptions, optionalAttendeeEventsCollection, mandatoryAttendeeEvents, request
     );
     
-    return tieBreaker(possibleTimeOptionsCollection);
+    return tieBreaker(possibleTimeOptions);
   }
   
   private Set<String> combineAttendeeSets(Collection<String> attendeeSetOne, Collection<String> attendeeSetTwo) {
