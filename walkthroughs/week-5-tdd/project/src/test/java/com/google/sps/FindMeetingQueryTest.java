@@ -473,7 +473,7 @@ public final class FindMeetingQueryTest {
           Arrays.asList(PERSON_A)),
       new Event("Event 2", TimeRange.fromStartEnd(30, TIME_0800AM, false),
           Arrays.asList(PERSON_B)),
-      new Event("Event 3", TimeRange.fromStartEnd(TIME_0800AM, TIME_1000AM, false),
+      new Event("Event 3", TimeRange.fromStartEnd(TIME_0800AM, TimeRange.getTimeInMinutes(16,0), false),
           Arrays.asList(PERSON_C)),
       new Event("Event 4", TimeRange.fromStartEnd(TIME_0800AM, TimeRange.END_OF_DAY, true),
           Arrays.asList(PERSON_D)));
@@ -481,7 +481,7 @@ public final class FindMeetingQueryTest {
     MeetingRequest request = new MeetingRequest(Arrays.asList(PERSON_A), Arrays.asList(PERSON_B, PERSON_C, PERSON_D), DURATION_1_HOUR);
     
     Collection<TimeRange> actual = query.query(events, request);
-    Collection<TimeRange> expected = Arrays.asList(TimeRange.fromStartEnd(TIME_1000AM, TimeRange.END_OF_DAY, true));
+    Collection<TimeRange> expected = Arrays.asList(TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(16,0), TimeRange.END_OF_DAY, true));
     
     Assert.assertEquals(expected, actual);
   }
