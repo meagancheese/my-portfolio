@@ -73,11 +73,17 @@ public final class FindMeetingQuery {
     sortByStart(mandatoryAttendeeEvents);
     sortByStart(optionalAttendeeEvents);
     
-    if (mandatoryAttendeeEvents.isEmpty()) {
+    // If there are no mandatory attendees, each optional attendee is already included in 
+    // "everyone" and to treat them equally, we return here.
+    if (mandatoryRequestAttendees.isEmpty()) {
       return everyoneTimeOptions;
     }
     
-    ArrayList<TimeRange> mandatoryAttendeeTimeOptions = getAllPossibleTimes(mandatoryAttendeeEvents, request);
+    ArrayList<TimeRange> mandatoryAttendeeTimeOptions = new ArrayList<TimeRange>();
+    
+    if (!mandatoryAttendeeEvents.isEmpty()) {
+      mandatoryAttendeeTimeOptions = getAllPossibleTimes(mandatoryAttendeeEvents, request);
+    }
     
     List<ArrayList<TimeRange>> possibleTimeOptions = new ArrayList<ArrayList<TimeRange>>();
     possibleTimeOptions.add(mandatoryAttendeeTimeOptions);
