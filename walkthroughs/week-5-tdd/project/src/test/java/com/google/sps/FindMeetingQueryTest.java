@@ -434,7 +434,7 @@ public final class FindMeetingQueryTest {
   }
   
   @Test
-  public void moreOptions() {
+  public void picksOptionalAttendeeWithMoreOptions() {
     // One mandatory attendee B and two viable optional attendees, the attendee who returns
     // more options (longer duration of possible meeting times) is picked.
     //
@@ -459,7 +459,7 @@ public final class FindMeetingQueryTest {
   }
   
   @Test
-  public void picksMoreOptionalAttendees() {
+  public void optimizesOptionalAttendees() {
     // One mandatory attendee and three optional attendees, two of the optional attendees should be selected that still allow
     // for a meeting time. This is a basic maximization test.
     //
@@ -512,32 +512,6 @@ public final class FindMeetingQueryTest {
   }
   
   @Test
-  public void picksFewerBlocksOfTime() {
-    // When deciding between two options of equal time, the option that is broken up into fewer blocks
-    // of time will be selected.
-    //
-    // Events  : |--A--|--B--|
-    //              |-----C-----|
-    // Day     : |------------------|
-    // Options :             |------|
-    
-    Collection<Event> events = Arrays.asList(
-      new Event("Event 1", TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0800AM, false),
-          Arrays.asList(PERSON_A)),
-      new Event("Event 2", TimeRange.fromStartEnd(TIME_0800AM, TimeRange.getTimeInMinutes(16,0), false),
-          Arrays.asList(PERSON_B)),
-      new Event("Event 3", TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(4,0), TimeRange.getTimeInMinutes(20,0), false),
-          Arrays.asList(PERSON_C)));
-    
-    MeetingRequest request = new MeetingRequest(Arrays.asList(PERSON_B), Arrays.asList(PERSON_A, PERSON_C), DURATION_2_HOUR);
-    
-    Collection<TimeRange> actual = query.query(events, request);
-    Collection<TimeRange> expected = Arrays.asList(TimeRange.fromStartEnd(TimeRange.getTimeInMinutes(16,0), TimeRange.END_OF_DAY, true));
-    
-    Assert.assertEquals(expected, actual);
-  }
-  
-  @Test
   public void optimizesWhenOptionalAttendeesHaveSeveralEvents() {
     // Attendees should be considered individually, not events by themselves. This tests that one optional participant's
     // events are considered together.
@@ -560,7 +534,7 @@ public final class FindMeetingQueryTest {
     MeetingRequest request = new MeetingRequest(Arrays.asList(PERSON_B), Arrays.asList(PERSON_A, PERSON_C), DURATION_1_HOUR);
     
     Collection<TimeRange> actual = query.query(events, request);
-    Collection<TimeRange> expected = Arrays.asList(TimeRange.fromStartEnd(TIME_1100AM, TimeRange.END_OF_DAY, true));
+    Collection<TimeRange> expected = Arrays.asList(TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0800AM, false));
     
     Assert.assertEquals(expected, actual);
   }

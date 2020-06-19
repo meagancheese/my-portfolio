@@ -77,29 +77,31 @@ public final class FindMeetingQuery {
       return everyoneTimeOptions;
     }
     
-    Collection<TimeRange> mandatoryAttendeeTimeOptions = getAllPossibleTimes(mandatoryAttendeeEvents, request);
+    ArrayList<TimeRange> mandatoryAttendeeTimeOptions = getAllPossibleTimes(mandatoryAttendeeEvents, request);
     
-    // Here's where things need fixing.
-    List<Event> optionalAttendeeSafeEvents = new ArrayList<Event>();
+    List<ArrayList<TimeRange>> possibleTimeOptionsCollection = new ArrayList<ArrayList<TimeRange>>();
+    possibleTimeOptionsCollection.add(mandatoryAttendeeTimeOptions);
     
-    for (Event event : optionalAttendeeEvents) {
-      List<Event> mandatoryAttendeeEventsPlusEvent = new ArrayList<Event>(mandatoryAttendeeEvents);
-      mandatoryAttendeeEventsPlusEvent.add(event);
-      sortByStart(mandatoryAttendeeEventsPlusEvent);
-      if (!getAllPossibleTimes(mandatoryAttendeeEventsPlusEvent, request).isEmpty()) {
-        optionalAttendeeSafeEvents.add(event);
+    List<ArrayList<Event>> optionalAttendeeEventsCollection = new ArrayList<ArrayList<Event>>();
+    
+    // Sorts events according to their optional attendees, making a separate ArrayList for each optional
+    // attendee's events.
+    for (String optionalAttendee : optionalRequestAttendees) {
+      ArrayList<Event> thisOptionalAttendeeEvents = new ArrayList<Event>();
+      for (Event event : optionalAttendeeEvents) {
+        if (event.getAttendees().contains(optionalAttendee)) {
+          thisOptionalAttendeeEvents.add(event);
+        }
       }
+      sortByStart(thisOptionalAttendeeEvents);
+      optionalAttendeeEventsCollection.add(thisOptionalAttendeeEvents);
     }
     
-    if (optionalAttendeeSafeEvents.isEmpty()) {
-      return mandatoryAttendeeTimeOptions;
-    }
+    possibleTimeOptionsCollection = addOptionalAttendees(
+      possibleTimeOptionsCollection, optionalAttendeeEventsCollection, mandatoryAttendeeEvents, request
+    );
     
-    List<Event> mandatoryAttendeeEventsPlusOptionalSafeEvents = new ArrayList<Event>(mandatoryAttendeeEvents);
-    mandatoryAttendeeEventsPlusOptionalSafeEvents.addAll(optionalAttendeeSafeEvents);
-    sortByStart(mandatoryAttendeeEventsPlusOptionalSafeEvents);
-    
-    return getAllPossibleTimes(mandatoryAttendeeEventsPlusOptionalSafeEvents, request);
+    return tieBreaker(possibleTimeOptionsCollection);
   }
   
   private Set<String> combineAttendeeSets(Collection<String> attendeeSetOne, Collection<String> attendeeSetTwo) {
@@ -121,8 +123,8 @@ public final class FindMeetingQuery {
     return true;
   }
   
-  private Collection<TimeRange> getAllPossibleTimes(List<Event> eventsList, MeetingRequest request) {
-    Collection<TimeRange> timeOptions = new ArrayList<TimeRange>();
+  private ArrayList<TimeRange> getAllPossibleTimes(List<Event> eventsList, MeetingRequest request) {
+    ArrayList<TimeRange> timeOptions = new ArrayList<TimeRange>();
     TimeRange firstEventTime = eventsList.get(0).getWhen();
     TimeRange lastEventTime = eventsList.get(eventsList.size() - 1).getWhen();
     boolean lastEventSkipped = false;
@@ -164,8 +166,8 @@ public final class FindMeetingQuery {
     return firstTimeRange.end() == secondTimeRange.start();
   }
   
-  private Collection<TimeRange> removeTooSmallTimes(Collection<TimeRange> timeOptions, MeetingRequest request) {
-    Collection<TimeRange> tooShortTimeOptions = new ArrayList<TimeRange>();
+  private ArrayList<TimeRange> removeTooSmallTimes(ArrayList<TimeRange> timeOptions, MeetingRequest request) {
+    ArrayList<TimeRange> tooShortTimeOptions = new ArrayList<TimeRange>();
     for (TimeRange meetingOption : timeOptions) {
       if (meetingOption.duration() < request.getDuration()) {
         tooShortTimeOptions.add(meetingOption);
@@ -173,5 +175,65 @@ public final class FindMeetingQuery {
     }
     timeOptions.removeAll(tooShortTimeOptions);
     return timeOptions;
+  }
+  
+  private List<ArrayList<TimeRange>> addOptionalAttendees(List<ArrayList<TimeRange>> currentOptions, 
+    List<ArrayList<Event>> tryingToAdd, List<Event> existingEvents, MeetingRequest request) {
+    if (tryingToAdd.isEmpty()) {
+      return currentOptions;
+    }
+    List<ArrayList<TimeRange>> bestOptions = new ArrayList<ArrayList<TimeRange>>();
+    for (ArrayList<Event> optionToAdd : tryingToAdd) {
+      List<ArrayList<Event>> updatedOptionsToAdd = new ArrayList<ArrayList<Event>>();
+      updatedOptionsToAdd.addAll(tryingToAdd);
+      updatedOptionsToAdd.remove(optionToAdd);
+      List<Event> newEventList = new ArrayList<Event>(existingEvents);
+      newEventList.addAll(optionToAdd);
+      sortByStart(newEventList);
+      ArrayList<TimeRange> newTimeOptions = getAllPossibleTimes(newEventList, request);
+      if (!newTimeOptions.isEmpty()) {
+        addIfDoesNotExist(bestOptions, addOptionalAttendees(Arrays.asList(newTimeOptions), updatedOptionsToAdd, newEventList, request));
+      }
+    }
+    if (bestOptions.isEmpty()) {
+      return currentOptions;
+    }
+    return bestOptions;
+  }
+  
+  private void addIfDoesNotExist(List<ArrayList<TimeRange>> timeCollection, List<ArrayList<TimeRange>> timeOptionsToAdd) {
+    if (!timeCollection.contains(timeOptionsToAdd)) {
+      timeCollection.addAll(timeOptionsToAdd);
+    }
+    return;
+  }
+  
+  private Collection<TimeRange> tieBreaker(List<ArrayList<TimeRange>> timeCollection) {
+    if (timeCollection.isEmpty()) {
+      return Arrays.asList();
+    }
+    ArrayList<TimeRange> bestOption = timeCollection.get(0);
+    for (int i = 1; i < timeCollection.size(); i++) {
+      ArrayList<TimeRange> currentContender = timeCollection.get(i);
+      // The Option that gives the widest time range (greatest total duration) is the best
+      if (getTotalDuration(currentContender) > getTotalDuration(bestOption)) {
+        bestOption = currentContender;
+      } else if (getTotalDuration(currentContender) == getTotalDuration(bestOption)) {
+        // If two options have the same total duration, we will pick the option that has
+        // the earliest start option
+        if (currentContender.get(0).start() < bestOption.get(0).start()) {
+        bestOption = currentContender;
+        }
+      }
+    }
+    return bestOption;
+  }
+  
+  private int getTotalDuration(Collection<TimeRange> timeOptions) {
+    int totalDuration = 0;
+    for (TimeRange time : timeOptions) {
+      totalDuration += time.duration();
+    }
+    return totalDuration;
   }
 }
